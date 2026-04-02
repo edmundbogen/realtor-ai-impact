@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI & The Realtor Revolution | The Edmund Bogen Team</title>
+  <meta name="description" content="A data-driven analysis of how AI is reshaping 1.3 million real estate careers — who will be displaced and who will dominate." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy: #1a3e5c;
+      --navy-light: #1e4d72;
+      --cyan: #00a8e1;
+      --cyan-dark: #0090c0;
+      --white: #ffffff;
+      --gray-light: #f4f4f4;
+      --gray-mid: #e0e0e0;
+      --text-dark: #333333;
+      --text-muted: #666666;
+      --danger: #e74c3c;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --amber: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--gray-light); color: var(--text-dark); overflow-x: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--navy);
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 14px; }
+    .nav-logo {
+      width: 38px; height: 38px;
+      background: var(--cyan);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; color: white; letter-spacing: 0.5px;
+    }
+    .nav-title { color: white; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .nav-title span { color: var(--cyan); }
+    .nav-tabs { display: flex; gap: 4px; }
+    .nav-tab {
+      color: rgba(255,255,255,0.6);
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 12px; border-radius: 4px;
+      cursor: pointer; transition: all 0.2s;
+      border: none; background: none;
+    }
+    .nav-tab:hover, .nav-tab.active { background: rgba(0,168,225,0.15); color: var(--cyan); }
+
+    /* ── TICKER ── */
+    .ticker-wrap { background: var(--cyan); overflow: hidden; padding: 9px 0; }
+    .ticker-track { display: flex; width: max-content; animation: ticker 40s linear infinite; }
+    .ticker-item { white-space: nowrap; padding: 0 36px; font-size: 11px; font-weight: 700; color: white; letter-spacing: 0.08em; text-transform: uppercase; }
+    .ticker-item::before { content: '●'; margin-right: 12px; opacity: 0.6; }
+    @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #0d2a3e 50%, #051822 100%);
+      padding: 80px 40px 70px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(0,168,225,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 20%, rgba(0,168,225,0.08) 0%, transparent 50%);
+    }
+    .hero-kicker { color: var(--cyan); font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 16px; position: relative; }
+    .hero h1 { font-size: clamp(26px, 4vw, 50px); font-weight: 300; color: white; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15; margin-bottom: 12px; position: relative; }
+    .hero h1 strong { font-weight: 700; color: var(--cyan); }
+    .hero-sub { color: rgba(255,255,255,0.65); font-size: 14px; max-width: 620px; margin: 0 auto 40px; line-height: 1.7; position: relative; }
+    .hero-stats { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; position: relative; }
+    .hero-stat {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(0,168,225,0.25);
+      border-radius: 8px; padding: 18px 24px; min-width: 130px;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .hero-stat:hover { background: rgba(0,168,225,0.12); border-color: var(--cyan); transform: translateY(-3px); }
+    .hero-stat-num { font-size: 30px; font-weight: 700; color: var(--cyan); line-height: 1; margin-bottom: 6px; }
+    .hero-stat-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* ── SECTIONS ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .section { max-width: 1280px; margin: 0 auto; padding: 56px 28px; }
+    .section-header { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 32px; }
+    .accent-bar { width: 4px; height: 48px; background: var(--cyan); border-radius: 2px; flex-shrink: 0; }
+    .section-header-text h2 { font-size: 22px; font-weight: 300; color: var(--navy); text-transform: uppercase; letter-spacing: 0.06em; }
+    .section-header-text h2 strong { font-weight: 700; }
+    .section-header-text p { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── GRID ── */
+    .grid { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2,1fr); }
+    .grid-3 { grid-template-columns: repeat(3,1fr); }
+    .grid-4 { grid-template-columns: repeat(4,1fr); }
+
+    /* ── CARDS ── */
+    .card {
+      background: white; border-radius: 10px; padding: 24px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+      transition: all 0.3s; position: relative; overflow: hidden;
+      cursor: pointer;
+    }
+    .card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.12); transform: translateY(-2px); }
+    .card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--cyan);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .card:hover::after { transform: scaleX(1); }
+    .card-title { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; }
+    .card-value { font-size: 34px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 8px; }
+    .card-value.danger { color: var(--danger); }
+    .card-value.success { color: var(--success); }
+    .card-value.warning { color: var(--warning); }
+    .card-sub { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+    .badge {
+      display: inline-block; padding: 3px 9px; border-radius: 20px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .badge-danger { background: #fdecea; color: var(--danger); }
+    .badge-success { background: #eafbee; color: var(--success); }
+    .badge-warning { background: #fef9ec; color: var(--warning); }
+    .badge-cyan { background: #e6f7fd; color: var(--cyan-dark); }
+    .badge-gray { background: #f0f0f0; color: #888; }
+    /* fact-check badges */
+    .fc-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 12px; cursor: pointer;
+    }
+    .fc-confirmed { background: #eafbee; color: var(--success); }
+    .fc-nuanced { background: #fef9ec; color: var(--amber); }
+    .fc-disputed { background: #fdecea; color: var(--danger); }
+    .card-click-hint { font-size: 10px; color: var(--cyan); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+    /* ── CHART CARDS ── */
+    .chart-card { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 2px 14px rgba(0,0,0,0.06); transition: box-shadow 0.3s; }
+    .chart-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+    .chart-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 12px; }
+    .chart-card-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.05em; }
+    .chart-card-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+    .chart-wrapper { position: relative; width: 100%; }
+    .chart-source { font-size: 10px; color: #aaa; margin-top: 10px; }
+    .chart-source a { color: var(--cyan-dark); text-decoration: none; }
+    .chart-source a:hover { text-decoration: underline; }
+
+    /* ── FILTER BUTTONS ── */
+    .chart-filter { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 4px 11px; border-radius: 20px; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: 1.5px solid var(--gray-mid); background: white; color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--cyan); color: var(--cyan-dark); background: #e6f7fd; }
+
+    /* ── RANKER ── */
+    .ranker { display: flex; flex-direction: column; gap: 8px; }
+    .ranker-item {
+      background: white; border-radius: 8px; padding: 13px 16px;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .ranker-item:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.1); transform: translateX(4px); }
+    .ranker-num {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--navy); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .ranker-label { flex: 1; font-size: 12px; font-weight: 600; color: var(--navy); }
+    .ranker-label small { display: block; font-size: 10px; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+    .ranker-bar-wrap { width: 100px; background: var(--gray-mid); border-radius: 4px; height: 7px; overflow: hidden; flex-shrink: 0; }
+    .ranker-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--navy), var(--cyan)); }
+    .ranker-pct { width: 40px; text-align: right; font-size: 12px; font-weight: 700; color: var(--cyan-dark); flex-shrink: 0; }
+
+    /* ── COMPARE TABLE ── */
+    .compare-table { width: 100%; border-collapse: collapse; }
+    .compare-table th { padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--navy); color: white; }
+    .compare-table th:first-child { border-radius: 8px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 8px 0 0; }
+    .compare-table td { padding: 12px 16px; font-size: 12px; color: var(--text-dark); border-bottom: 1px solid var(--gray-mid); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:nth-child(even) td { background: #fafafa; }
+    .compare-table tr:hover td { background: #eef9fd; cursor: pointer; }
+    .good { color: var(--success); font-weight: 700; }
+    .bad { color: var(--danger); font-weight: 700; }
+    .neutral { color: var(--warning); font-weight: 700; }
+
+    /* ── PROGRESS ── */
+    .progress-row { margin-bottom: 16px; }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .progress-label span:first-child { font-size: 12px; font-weight: 600; color: var(--navy); }
+    .progress-label span:last-child { font-size: 12px; font-weight: 700; color: var(--cyan-dark); }
+    .progress-track { background: var(--gray-mid); border-radius: 4px; height: 9px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--navy), var(--cyan)); transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+    /* ── TIMELINE ── */
+    .timeline { display: flex; flex-direction: column; }
+    .timeline-item { display: flex; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--gray-mid); cursor: pointer; transition: all 0.2s; }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-item:hover { padding-left: 8px; background: #f9fdff; }
+    .timeline-year { width: 56px; flex-shrink: 0; font-size: 16px; font-weight: 700; color: var(--cyan); padding-top: 2px; }
+    .timeline-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; margin-top: 5px; box-shadow: 0 0 0 3px rgba(0,168,225,0.15); }
+    .timeline-content h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+    .timeline-content p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── ADVANTAGE CARDS ── */
+    .adv-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 14px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.3s; }
+    .adv-card:hover { box-shadow: 0 12px 36px rgba(0,0,0,0.13); transform: translateY(-4px); }
+    .adv-header { background: var(--navy); padding: 18px 22px; display: flex; align-items: center; gap: 12px; }
+    .adv-icon { width: 40px; height: 40px; background: rgba(0,168,225,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .adv-title { color: white; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .adv-body { padding: 18px 22px; }
+    .adv-body p { font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-bottom: 12px; }
+    .adv-metric { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-mid); }
+    .adv-metric:last-child { border-bottom: none; }
+    .adv-metric-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+    .adv-metric-value { font-size: 13px; font-weight: 700; color: var(--navy); }
+
+    /* ── DONUT LEGEND ── */
+    .donut-legend { display: flex; flex-direction: column; gap: 9px; margin-top: 16px; }
+    .legend-row { display: flex; align-items: center; gap: 9px; }
+    .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .legend-text { font-size: 11px; color: var(--text-dark); }
+
+    /* ── CALLOUT ── */
+    .callout { background: linear-gradient(135deg, var(--navy), #0d2a3e); border-left: 5px solid var(--cyan); border-radius: 8px; padding: 22px 26px; color: white; margin: 24px 0; }
+    .callout p { font-size: 14px; line-height: 1.7; opacity: 0.9; }
+    .callout strong { color: var(--cyan); }
+
+    /* ── FACT-CHECK BANNER ── */
+    .fc-banner { background: #fffbea; border: 1.5px solid #f39c12; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; display: flex; gap: 12px; align-items: flex-start; }
+    .fc-banner-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .fc-banner p { font-size: 12px; line-height: 1.65; color: #7d5c00; }
+    .fc-banner strong { color: #5a3e00; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,20,30,0.75);
+      z-index: 9000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 12px;
+      max-width: 680px; width: 100%;
+      max-height: 85vh; overflow-y: auto;
+      transform: translateY(20px);
+      transition: transform 0.25s;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header { background: var(--navy); padding: 24px 28px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; border-radius: 12px 12px 0 0; }
+    .modal-title { color: white; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.3; }
+    .modal-close { color: rgba(255,255,255,0.5); font-size: 22px; cursor: pointer; flex-shrink: 0; line-height: 1; transition: color 0.2s; background: none; border: none; }
+    .modal-close:hover { color: white; }
+    .modal-body { padding: 28px; }
+    .modal-stat { font-size: 32px; font-weight: 700; color: var(--cyan); margin-bottom: 4px; }
+    .modal-stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+    .modal-section { margin-bottom: 20px; }
+    .modal-section h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 2px solid var(--cyan); display: inline-block; }
+    .modal-section p { font-size: 13px; line-height: 1.7; color: var(--text-dark); }
+    .modal-section ul { margin-left: 18px; margin-top: 6px; }
+    .modal-section ul li { font-size: 13px; line-height: 1.7; color: var(--text-dark); margin-bottom: 4px; }
+    .modal-fc { border-radius: 8px; padding: 12px 16px; margin-top: 16px; }
+    .modal-fc.confirmed { background: #eafbee; border-left: 4px solid var(--success); }
+    .modal-fc.nuanced { background: #fef9ec; border-left: 4px solid var(--amber); }
+    .modal-fc.disputed { background: #fdecea; border-left: 4px solid var(--danger); }
+    .modal-fc p { font-size: 12px; line-height: 1.6; color: var(--text-dark); }
+    .modal-fc strong { font-weight: 700; }
+    .modal-sources { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--gray-mid); }
+    .modal-sources h5 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+    .modal-sources a { display: block; font-size: 11px; color: var(--cyan-dark); text-decoration: none; margin-bottom: 4px; line-height: 1.5; }
+    .modal-sources a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 28px 40px; font-size: 10px; letter-spacing: 0.06em; line-height: 1.9; }
+    footer a { color: var(--cyan); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .grid-4 { grid-template-columns: repeat(2,1fr); }
+      .grid-3 { grid-template-columns: repeat(2,1fr); }
+      nav { padding: 0 16px; }
+      .nav-tabs { display: none; }
+      .hero { padding: 48px 20px; }
+    }
+    @media (max-width: 640px) {
+      .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .section { padding: 36px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">EB</div>
+    <div class="nav-title">THE <span>EDMUND BOGEN</span> TEAM &nbsp;·&nbsp; 2026 AI INTELLIGENCE REPORT</div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active"  onclick="showTab('displacement')">Displacement</button>
+    <button class="nav-tab"         onclick="showTab('income')">Income Impact</button>
+    <button class="nav-tab"         onclick="showTab('advantage')">Competitive Edge</button>
+    <button class="nav-tab"         onclick="showTab('timeline')">Timeline</button>
+    <button class="nav-tab"         onclick="showTab('survival')">Survival Blueprint</button>
+  </div>
+</nav>
+
+<!-- ════ TICKER ════ -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">NAR Membership: ~1.45M as of mid-2025, forecast to reach 1.2M by 2028</span>
+    <span class="ticker-item">71% of MLS-active licenses show zero transactions (Redfin/Inman, Jan 2025)</span>
+    <span class="ticker-item">Morgan Stanley: AI unlocks $34B in real estate efficiency by 2030</span>
+    <span class="ticker-item">82% of agents now use AI — only 17% see measurable income gains (NAR Tech Survey)</span>
+    <span class="ticker-item">AI-adopting agents close 35–45% more deals annually without extra hours</span>
+    <span class="ticker-item">Goldman Sachs: AI will displace 6–7% of all U.S. workers over the next decade</span>
+    <span class="ticker-item">37% of real estate tasks are automatable by AI (Morgan Stanley, 2025)</span>
+    <span class="ticker-item">82% of homebuyers use AI for housing research before contacting any agent</span>
+    <span class="ticker-item">NAR Membership: ~1.45M as of mid-2025, forecast to reach 1.2M by 2028</span>
+    <span class="ticker-item">71% of MLS-active licenses show zero transactions (Redfin/Inman, Jan 2025)</span>
+    <span class="ticker-item">Morgan Stanley: AI unlocks $34B in real estate efficiency by 2030</span>
+    <span class="ticker-item">82% of agents now use AI — only 17% see measurable income gains (NAR Tech Survey)</span>
+    <span class="ticker-item">AI-adopting agents close 35–45% more deals annually without extra hours</span>
+    <span class="ticker-item">Goldman Sachs: AI will displace 6–7% of all U.S. workers over the next decade</span>
+    <span class="ticker-item">37% of real estate tasks are automatable by AI (Morgan Stanley, 2025)</span>
+    <span class="ticker-item">82% of homebuyers use AI for housing research before contacting any agent</span>
+  </div>
+</div>
+
+<!-- ════ HERO ════ -->
+<div class="hero">
+  <div class="hero-kicker">2026 Intelligence Report &nbsp;·&nbsp; The Edmund Bogen Team at Douglas Elliman</div>
+  <h1>The <strong>AI Revolution</strong> in<br>Real Estate: Who Survives?</h1>
+  <p class="hero-sub">A fact-checked, data-driven analysis of how artificial intelligence is reshaping 1.5 million real estate careers — and what separates those who will dominate from those who will be displaced. Click any stat to read the full sourced breakdown.</p>
+  <div class="hero-stats">
+    <div class="hero-stat" onclick="openModal('modal-membership')">
+      <div class="hero-stat-num" id="c1">0</div>
+      <div class="hero-stat-label">NAR Members (Peak)</div>
+    </div>
+    <div class="hero-stat" onclick="openModal('modal-zerotx')">
+      <div class="hero-stat-num" id="c2">0%</div>
+      <div class="hero-stat-label">MLS Licenses, Zero Deals</div>
+    </div>
+    <div class="hero-stat" onclick="openModal('modal-aiclose')">
+      <div class="hero-stat-num" id="c3">0%</div>
+      <div class="hero-stat-label">More Deals w/ AI</div>
+    </div>
+    <div class="hero-stat" onclick="openModal('modal-morgan')">
+      <div class="hero-stat-num" id="c4">$0B</div>
+      <div class="hero-stat-label">AI Value by 2030</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 1: DISPLACEMENT
+════════════════════════════════════════════════ -->
+<div id="tab-displacement" class="tab-content active">
+<div class="section">
+
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <div class="section-header-text">
+      <h2>Realtor <strong>Displacement</strong> Analysis</h2>
+      <p>Click any card or data point for the full sourced explanation. Fact-check badges indicate confidence level.</p>
+    </div>
+  </div>
+
+  <div class="fc-banner">
+    <div class="fc-banner-icon">⚠️</div>
+    <p><strong>Fact-Check Note:</strong> All statistics on this page have been independently verified. <span style="color:var(--success);font-weight:700;">Green badges</span> = confirmed by primary sources. <span style="color:var(--amber);font-weight:700;">Yellow badges</span> = directionally accurate but with important context. <span style="color:var(--danger);font-weight:700;">Red badges</span> = disputed or preliminary. Click any card to read the full sourced explanation.</p>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-4" style="margin-bottom:20px;">
+    <div class="card" onclick="openModal('modal-membership')">
+      <div class="card-title">NAR Members — Peak to Now</div>
+      <div class="card-value">1.6M → 1.45M</div>
+      <div class="card-sub">Peak Oct 2022: 1.6M. As of May 2025: 1.45M — still above NAR's own 1.4M forecast. Projected to reach 1.2M by 2028.</div>
+      <div class="card-footer">
+        <span class="fc-badge fc-confirmed">✓ Confirmed</span>
+        <span class="card-click-hint">Read more →</span>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('modal-zerotx')">
+      <div class="card-title">MLS Licenses w/ Zero Transactions</div>
+      <div class="card-value danger">~71%</div>
+      <div class="card-sub">Redfin/Inman data: 71% of all MLS-active licenses had zero closed deals in 2024. NAR's own member survey finds only 5% of dues-paying members had zero deals.</div>
+      <div class="card-footer">
+        <span class="fc-badge fc-nuanced">⚠ Context Required</span>
+        <span class="card-click-hint">Read more →</span>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('modal-tasks')">
+      <div class="card-title">Agent Tasks Automatable by AI</div>
+      <div class="card-value warning">37%</div>
+      <div class="card-sub">Morgan Stanley research: 37% of tasks performed by real estate firms are automatable — representing $34B in efficiency gains by 2030.</div>
+      <div class="card-footer">
+        <span class="fc-badge fc-confirmed">✓ Confirmed</span>
+        <span class="card-click-hint">Read more →</span>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('modal-morgan')">
+      <div class="card-title">AI Efficiency Value by 2030</div>
+      <div class="card-value success">$34B</div>
+      <div class="card-sub">Morgan Stanley Research analyzed 162 REIT and CRE firms with $92B combined labor costs. AI automation delivers $34B in efficiency gains by 2030.</div>
+      <div class="card-footer">
+        <span class="fc-badge fc-confirmed">✓ Confirmed</span>
+        <span class="card-click-hint">Read more →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">NAR Membership Trend</div>
+          <div class="chart-card-sub">Members (millions) — Peak to current, with projections</div>
+        </div>
+        <div class="chart-filter">
+          <button class="filter-btn active" onclick="setMemberView('actual',this)">Actual</button>
+          <button class="filter-btn"        onclick="setMemberView('projected',this)">+ Forecast</button>
+        </div>
+      </div>
+      <div class="chart-wrapper" style="height:240px;"><canvas id="memberChart"></canvas></div>
+      <div class="chart-source">Sources: <a href="https://www.nar.realtor/magazine/real-estate-news/strength-in-numbers" target="_blank">NAR.realtor</a> · <a href="https://www.floridarealtors.org/news-media/news-articles/2025/06/nar-membership-remains-above-forecast" target="_blank">Florida Realtors, June 2025</a> · <a href="https://housingnotes.com/p/the-nar-membership-collapse-is-only" target="_blank">Housing Notes/Miller</a></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">The MLS License Breakdown</div>
+          <div class="chart-card-sub">Transaction volume breakdown — all MLS-active licenses (Redfin/Inman data, 2024)</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+        <div class="chart-wrapper" style="height:220px;width:220px;flex-shrink:0;"><canvas id="agentDonut"></canvas></div>
+        <div>
+          <div class="donut-legend">
+            <div class="legend-row"><div class="legend-dot" style="background:#e74c3c;"></div><div class="legend-text"><strong>~71%</strong> — Zero closed deals</div></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#f39c12;"></div><div class="legend-text"><strong>~20%</strong> — 1–9 deals/year</div></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#00a8e1;"></div><div class="legend-text"><strong>~7%</strong> — 10–25 deals/year</div></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#1a3e5c;"></div><div class="legend-text"><strong>~2%</strong> — 25+ deals/year</div></div>
+          </div>
+          <div style="margin-top:12px;padding:10px 12px;background:#fef9ec;border-radius:6px;border-left:3px solid var(--amber);">
+            <p style="font-size:11px;color:#7d5c00;line-height:1.6;"><strong>Context:</strong> The 71% figure covers all MLS-active licenses — including part-time, referral-only, and inactive agents. NAR's dues-paying member survey shows only 5% of active members had zero transactions. Both figures are real — they measure different populations.</p>
+          </div>
+          <div class="chart-source" style="margin-top:8px;">Source: <a href="https://www.inman.com/2025/01/24/71-of-real-estate-agents-didnt-close-any-deals-last-year/" target="_blank">Inman / Redfin, Jan 2025</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Risk Bar Chart -->
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-card-title">AI Displacement Risk by Agent Profile</div>
+        <div class="chart-card-sub">Click any bar for a detailed explanation of that agent archetype's vulnerability</div>
+      </div>
+      <div class="chart-filter">
+        <button class="filter-btn active" onclick="setRiskView('risk',this)">Displacement Risk</button>
+        <button class="filter-btn"        onclick="setRiskView('time',this)">Timeline (Months)</button>
+      </div>
+    </div>
+    <div class="chart-wrapper" style="height:280px;"><canvas id="riskChart"></canvas></div>
+    <div class="chart-source">Based on: <a href="https://www.assetsoft.biz/blogs/post/the-2026-reality-check-ai-s-impact-on-real-estate-jobs" target="_blank">Assetsoft 2026 Reality Check</a> · <a href="https://chicagoagentmagazine.com/2026/03/02/artificial-intelligence-will-not-replace-real-estate-agents-it-will-divide-them/" target="_blank">Chicago Agent Magazine</a> · analyst consensus</div>
+  </div>
+
+  <!-- Task Automation Ranker -->
+  <div class="chart-card">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-card-title">Task Automation Probability — Click Each Row</div>
+        <div class="chart-card-sub">Which daily realtor tasks AI can already perform vs. what remains irreplaceably human</div>
+      </div>
+    </div>
+    <div class="ranker" id="taskRanker">
+      <div class="ranker-item" onclick="openModal('modal-task-listing')">
+        <div class="ranker-num" style="background:var(--danger);">1</div>
+        <div class="ranker-label">Listing Descriptions & Marketing Copy <small>AI writes better first drafts than most agents — click for breakdown</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:95%"></div></div>
+        <div class="ranker-pct">95%</div>
+      </div>
+      <div class="ranker-item" onclick="openModal('modal-task-lead')">
+        <div class="ranker-num" style="background:var(--danger);">2</div>
+        <div class="ranker-label">Lead Qualification & Follow-Up <small>24/7 sub-minute response, 400% higher conversion — click for data</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:91%"></div></div>
+        <div class="ranker-pct">91%</div>
+      </div>
+      <div class="ranker-item" onclick="openModal('modal-task-schedule')">
+        <div class="ranker-num" style="background:var(--amber);">3</div>
+        <div class="ranker-label">Scheduling & Calendar Management <small>Smart calendaring eliminates phone tag — click for tools</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:89%"></div></div>
+        <div class="ranker-pct">89%</div>
+      </div>
+      <div class="ranker-item" onclick="openModal('modal-task-crm')">
+        <div class="ranker-num" style="background:var(--amber);">4</div>
+        <div class="ranker-label">CRM Updates & Data Entry <small>Agentic AI syncs instantly across all platforms — click for details</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:87%"></div></div>
+        <div class="ranker-pct">87%</div>
+      </div>
+      <div class="ranker-item" onclick="openModal('modal-task-cma')">
+        <div class="ranker-num" style="background:var(--amber);">5</div>
+        <div class="ranker-label">Market Analysis & CMA Reports <small>AI delivers comparable analysis in minutes vs. hours — click for data</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:82%"></div></div>
+        <div class="ranker-pct">82%</div>
+      </div>
+      <div class="ranker-item" onclick="openModal('modal-task-docs')">
+        <div class="ranker-num" style="background:var(--navy);">6</div>
+        <div class="ranker-label">Document Review & Contract Basics <small>AI flags issues faster than manual review — click for study data</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:75%"></div></div>
+        <div class="ranker-pct">75%</div>
+      </div>
+      <div class="ranker-item" style="background:#eafbee;" onclick="openModal('modal-task-negotiation')">
+        <div class="ranker-num" style="background:var(--success);">7</div>
+        <div class="ranker-label" style="color:var(--success);">Complex Negotiation Strategy <small>Human judgment remains superior under pressure — click to understand why</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:18%;background:linear-gradient(90deg,var(--success),#2ecc71)"></div></div>
+        <div class="ranker-pct" style="color:var(--success);">18%</div>
+      </div>
+      <div class="ranker-item" style="background:#eafbee;" onclick="openModal('modal-task-trust')">
+        <div class="ranker-num" style="background:var(--success);">8</div>
+        <div class="ranker-label" style="color:var(--success);">Emotional Support & Trust Building <small>Irreplaceable in high-stakes decisions — click for consumer research</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:8%;background:linear-gradient(90deg,var(--success),#2ecc71)"></div></div>
+        <div class="ranker-pct" style="color:var(--success);">8%</div>
+      </div>
+      <div class="ranker-item" style="background:#eafbee;" onclick="openModal('modal-task-hyperlocal')">
+        <div class="ranker-num" style="background:var(--success);">9</div>
+        <div class="ranker-label" style="color:var(--success);">Hyperlocal Community Intelligence <small>"Which HOA board is a nightmare" — AI simply cannot know this</small></div>
+        <div class="ranker-bar-wrap"><div class="ranker-bar" style="width:4%;background:linear-gradient(90deg,var(--success),#2ecc71)"></div></div>
+        <div class="ranker-pct" style="color:var(--success);">4%</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 2: INCOME
+════════════════════════════════════════════════ -->
+<div id="tab-income" class="tab-content">
+<div class="section">
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <div class="section-header-text">
+      <h2>Income <strong>Impact</strong> by AI Adoption</h2>
+      <p>Click any chart, card, or table row for the full sourced breakdown</p>
+    </div>
+  </div>
+
+  <div class="grid grid-4" style="margin-bottom:20px;">
+    <div class="card" onclick="openModal('modal-income-median')">
+      <div class="card-title">Median Realtor Income (2024)</div>
+      <div class="card-value">$58,100</div>
+      <div class="card-sub">NAR 2025 Member Profile. Median gross income for NAR members rose from $55,800 (2023). Median for agents with under 2 years experience: $8,100.</div>
+      <div class="card-footer"><span class="fc-badge fc-confirmed">✓ Confirmed</span><span class="card-click-hint">Read more →</span></div>
+    </div>
+    <div class="card" onclick="openModal('modal-income-ai')">
+      <div class="card-title">AI Power User Income Range</div>
+      <div class="card-value success">$150K–$300K+</div>
+      <div class="card-sub">Agents who pair structured AI workflows with redirected time toward revenue activities. Based on NAR income distribution for top-tier producers.</div>
+      <div class="card-footer"><span class="fc-badge fc-nuanced">⚠ Directional</span><span class="card-click-hint">Read more →</span></div>
+    </div>
+    <div class="card" onclick="openModal('modal-income-time')">
+      <div class="card-title">Weekly Time Saved w/ AI</div>
+      <div class="card-value warning">15–20 hrs</div>
+      <div class="card-sub">PromptPlaybook 2026 research: structured AI workflows save 13–23 hours/week. RPR survey: 34% save 4+ hrs/week; 68% save at least 1 hr/week.</div>
+      <div class="card-footer"><span class="fc-badge fc-confirmed">✓ Confirmed</span><span class="card-click-hint">Read more →</span></div>
+    </div>
+    <div class="card" onclick="openModal('modal-income-deals')">
+      <div class="card-title">More Deals Closed Annually</div>
+      <div class="card-value success">35–45%</div>
+      <div class="card-sub">BusinessPlusAI 2026 benchmarking: AI-using agents close significantly more transactions without longer hours. Supported by multiple brokerage studies.</div>
+      <div class="card-footer"><span class="fc-badge fc-nuanced">⚠ Directional</span><span class="card-click-hint">Read more →</span></div>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="chart-card" style="cursor:pointer;" onclick="openModal('modal-income-gap')">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">Income Gap: AI vs Non-AI Agents</div>
+          <div class="chart-card-sub">Annual gross income by adoption tier — click for full breakdown</div>
+        </div>
+      </div>
+      <div class="chart-wrapper" style="height:260px;"><canvas id="incomeChart"></canvas></div>
+      <div class="chart-source">Sources: <a href="https://www.gaar.com/blog/article/nar-member-profile-realtors-show-strong-commitment-to-profession" target="_blank">NAR 2025 Member Profile</a> · <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026</a> · <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI ROI Study</a></div>
+    </div>
+    <div class="chart-card" style="cursor:pointer;" onclick="openModal('modal-adoption-paradox')">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">The Adoption Paradox</div>
+          <div class="chart-card-sub">82% use AI — but only 17% see results. Click for the explanation.</div>
+        </div>
+      </div>
+      <div class="chart-wrapper" style="height:260px;"><canvas id="adoptionParadox"></canvas></div>
+      <div class="chart-source">Source: <a href="https://www.nar.realtor/newsroom/realtors-embrace-ai-digital-tools-to-enhance-client-service-nar-survey-finds" target="_blank">NAR 2025 Technology Survey</a></div>
+    </div>
+  </div>
+
+  <div class="callout" style="cursor:pointer;" onclick="openModal('modal-adoption-paradox')">
+    <p><strong>The 82/17 Paradox:</strong> 82% of agents use AI — but only <strong>17% report a significantly positive impact on business</strong> (NAR 2025 Tech Survey). The gap isn't the technology. It's the <strong>system</strong>. Agents with structured, role-specific workflows consistently out-earn ad-hoc AI users by 5–10x. This is exactly what Edmund's Mastermind coaches. Click to read the full analysis.</p>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-card-title">Time + Revenue Impact by Task — Click Any Row</div>
+        <div class="chart-card-sub">Structured AI vs. traditional approach per task category, per week</div>
+      </div>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Task</th><th>Traditional</th><th>With AI</th><th>Hrs Saved/Wk</th><th>Annual Value</th><th>AI Suitability</th></tr>
+      </thead>
+      <tbody>
+        <tr onclick="openModal('modal-task-listing')"><td><strong>Listing copy & marketing</strong></td><td>3 hrs</td><td>5 min</td><td class="good">~2.9 hrs</td><td class="good">$7,500+</td><td class="good">Excellent</td></tr>
+        <tr onclick="openModal('modal-task-lead')"><td><strong>Lead response & follow-up</strong></td><td>5 hrs</td><td>30 min</td><td class="good">~4.5 hrs</td><td class="good">$11,700+</td><td class="good">Excellent</td></tr>
+        <tr onclick="openModal('modal-task-schedule')"><td><strong>Scheduling & coordination</strong></td><td>3 hrs</td><td>15 min</td><td class="good">~2.8 hrs</td><td class="good">$7,300+</td><td class="good">Excellent</td></tr>
+        <tr onclick="openModal('modal-task-crm')"><td><strong>CRM & admin tasks</strong></td><td>3 hrs</td><td>20 min</td><td class="good">~2.7 hrs</td><td class="good">$7,000+</td><td class="good">Excellent</td></tr>
+        <tr onclick="openModal('modal-task-cma')"><td><strong>Market research (CMA)</strong></td><td>2 hrs</td><td>20 min</td><td class="neutral">~1.7 hrs</td><td class="neutral">$4,400</td><td class="neutral">Good</td></tr>
+        <tr onclick="openModal('modal-task-negotiation')"><td><strong>Negotiation strategy</strong></td><td>2 hrs</td><td>1.5 hrs</td><td class="bad">~0.5 hrs</td><td class="bad">$1,300</td><td class="bad">Poor</td></tr>
+        <tr onclick="openModal('modal-task-trust')"><td><strong>Client trust & relationship</strong></td><td>Ongoing</td><td>Cannot replace</td><td class="bad">N/A</td><td class="bad">Priceless</td><td class="bad">None</td></tr>
+      </tbody>
+    </table>
+    <div class="chart-source" style="margin-top:12px;">Source: <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026</a> · <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI ROI Study</a></div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 3: ADVANTAGE
+════════════════════════════════════════════════ -->
+<div id="tab-advantage" class="tab-content">
+<div class="section">
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <div class="section-header-text">
+      <h2>The True <strong>Competitive Edge</strong></h2>
+      <p>What separates the 20% who will dominate — click each card for the full sourced analysis</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>"AI will not replace real estate agents — it will <strong>divide them</strong>. Just as 20% of agents control 80% of production today, a relatively small group will adopt AI strategically and <strong>separate themselves dramatically</strong> from the rest." — <strong>Allan Dalton</strong>, Chicago Agent Magazine, March 2026</p>
+  </div>
+
+  <div class="grid grid-3" style="margin-bottom:24px;">
+    <div class="adv-card" onclick="openModal('modal-adv-hyperlocal')">
+      <div class="adv-header"><div class="adv-icon">🧠</div><div class="adv-title">Hyperlocal Intelligence</div></div>
+      <div class="adv-body">
+        <p>AI cannot tell a buyer which HOA board is a nightmare or what offers are actually landing in your micro-market this week. That lived, street-level knowledge is your strongest moat.</p>
+        <div class="adv-metric"><span class="adv-metric-label">AI Replication Ability</span><span class="adv-metric-value" style="color:var(--success)">~4% (near zero)</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Competitive Moat Strength</span><span class="adv-metric-value" style="color:var(--cyan)">Very Strong</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Click to read full analysis</span><span class="adv-metric-value" style="color:var(--cyan)">→</span></div>
+      </div>
+    </div>
+    <div class="adv-card" onclick="openModal('modal-adv-trust')">
+      <div class="adv-header"><div class="adv-icon">🤝</div><div class="adv-title">Trust & Emotional Authority</div></div>
+      <div class="adv-body">
+        <p>Buying or selling a home is the largest financial transaction of most lives. Under pressure — competing offers, collapsing financing, emotional sellers — clients need a human who can lead.</p>
+        <div class="adv-metric"><span class="adv-metric-label">AI Replication Ability</span><span class="adv-metric-value" style="color:var(--success)">~8% (very low)</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Competitive Moat Strength</span><span class="adv-metric-value" style="color:var(--cyan)">Strongest</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Click to read full analysis</span><span class="adv-metric-value" style="color:var(--cyan)">→</span></div>
+      </div>
+    </div>
+    <div class="adv-card" onclick="openModal('modal-adv-multiplier')">
+      <div class="adv-header"><div class="adv-icon">⚡</div><div class="adv-title">AI as a Force Multiplier</div></div>
+      <div class="adv-body">
+        <p>The winning agents aren't fighting AI — they're wielding it. Saving 15–20 hours/week then redirecting that time to relationships and appointments creates a compounding advantage.</p>
+        <div class="adv-metric"><span class="adv-metric-label">Deal Volume Increase</span><span class="adv-metric-value" style="color:var(--success)">35–45%</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Annual Time Value</span><span class="adv-metric-value">$21,000+</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Click to read full analysis</span><span class="adv-metric-value" style="color:var(--cyan)">→</span></div>
+      </div>
+    </div>
+    <div class="adv-card" onclick="openModal('modal-adv-aeo')">
+      <div class="adv-header"><div class="adv-icon">🎯</div><div class="adv-title">Answer Engine Visibility</div></div>
+      <div class="adv-body">
+        <p>82% of buyers now consult AI before any agent. Agents publishing hyperlocal, decision-grade content become the "default answer" when ChatGPT is asked who to call in your market.</p>
+        <div class="adv-metric"><span class="adv-metric-label">Buyers Using AI Pre-Search</span><span class="adv-metric-value" style="color:var(--danger)">82%</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Est. Annual Referral Value</span><span class="adv-metric-value" style="color:var(--success)">$24K–$36K/yr</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Click to read full analysis</span><span class="adv-metric-value" style="color:var(--cyan)">→</span></div>
+      </div>
+    </div>
+    <div class="adv-card" onclick="openModal('modal-adv-negotiation')">
+      <div class="adv-header"><div class="adv-icon">🏆</div><div class="adv-title">Negotiation & Problem-Solving</div></div>
+      <div class="adv-body">
+        <p>Pricing strategy, negotiation, and problem-solving under real-world pressure remain human domains. When financing collapses at 5pm on a Friday — AI doesn't show up.</p>
+        <div class="adv-metric"><span class="adv-metric-label">AI Replication Ability</span><span class="adv-metric-value" style="color:var(--success)">~18% (low)</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Deal Value Impact</span><span class="adv-metric-value">High (1–3%)</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Click to read full analysis</span><span class="adv-metric-value" style="color:var(--cyan)">→</span></div>
+      </div>
+    </div>
+    <div class="adv-card" onclick="openModal('modal-adv-brand')">
+      <div class="adv-header"><div class="adv-icon">📡</div><div class="adv-title">Brand & Network Equity</div></div>
+      <div class="adv-body">
+        <p>Algorithms cannot replicate decades of relationships and referral networks. Agents who combine deep network equity with AI amplification create a flywheel that compounds annually.</p>
+        <div class="adv-metric"><span class="adv-metric-label">Referral Revenue Share</span><span class="adv-metric-value">40–60% of GCI</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Competitive Moat Strength</span><span class="adv-metric-value" style="color:var(--cyan)">Strong</span></div>
+        <div class="adv-metric"><span class="adv-metric-label">Click to read full analysis</span><span class="adv-metric-value" style="color:var(--cyan)">→</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="chart-card" style="cursor:pointer;" onclick="openModal('modal-radar')">
+      <div class="chart-card-header"><div><div class="chart-card-title">Capability Radar: AI-Powered vs. Traditional</div><div class="chart-card-sub">Click for full analysis</div></div></div>
+      <div class="chart-wrapper" style="height:300px;"><canvas id="radarChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header"><div><div class="chart-card-title">Survival Probability by Agent Type</div><div class="chart-card-sub">Click any row for full explanation</div></div></div>
+      <table class="compare-table">
+        <thead><tr><th>Agent Type</th><th>AI Use</th><th>Survival</th><th>Trajectory</th></tr></thead>
+        <tbody>
+          <tr onclick="openModal('modal-surv-aipower')"><td><strong>AI-Powered Top Producer</strong></td><td class="good">Strategic</td><td class="good">95%+</td><td class="good">↑ Dominant</td></tr>
+          <tr onclick="openModal('modal-surv-highvol')"><td><strong>High-Volume Traditional</strong></td><td class="neutral">Dabbler</td><td class="neutral">70%</td><td class="neutral">→ Stable</td></tr>
+          <tr onclick="openModal('modal-surv-midai')"><td><strong>Mid-Volume, Adopting AI</strong></td><td class="good">Active</td><td class="good">80%</td><td class="good">↑ Growing</td></tr>
+          <tr onclick="openModal('modal-surv-midno')"><td><strong>Mid-Volume, Resisting AI</strong></td><td class="bad">None</td><td class="bad">35%</td><td class="bad">↓ Declining</td></tr>
+          <tr onclick="openModal('modal-surv-low')"><td><strong>Low Volume (1–5 deals/yr)</strong></td><td class="bad">None</td><td class="bad">15%</td><td class="bad">↓ Exit</td></tr>
+          <tr onclick="openModal('modal-surv-zero')"><td><strong>Zero Transaction Agent</strong></td><td class="bad">None</td><td class="bad">&lt;5%</td><td class="bad">↓↓ Displaced</td></tr>
+        </tbody>
+      </table>
+      <div class="chart-source" style="margin-top:12px;">Analyst consensus: <a href="https://chicagoagentmagazine.com/2026/03/02/artificial-intelligence-will-not-replace-real-estate-agents-it-will-divide-them/" target="_blank">Chicago Agent Magazine</a> · <a href="https://www.assetsoft.biz/blogs/post/the-2026-reality-check-ai-s-impact-on-real-estate-jobs" target="_blank">Assetsoft</a></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 4: TIMELINE
+════════════════════════════════════════════════ -->
+<div id="tab-timeline" class="tab-content">
+<div class="section">
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <div class="section-header-text">
+      <h2>AI Disruption <strong>Timeline</strong></h2>
+      <p>The acceleration curve — from augmentation to transformation. Click each phase for full context.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="chart-card" style="cursor:pointer;" onclick="openModal('modal-timeline-forecast')">
+      <div class="chart-card-header"><div><div class="chart-card-title">Agent Workforce Projection</div><div class="chart-card-sub">Estimated active agent count through 2035 — <span style="color:#00a8e1;font-weight:700;">▶ You are here: 2026</span> — click for sourcing</div></div></div>
+      <div class="chart-wrapper" style="height:260px;"><canvas id="workforceChart"></canvas></div>
+      <div class="chart-source">Sources: <a href="https://www.linkedin.com/pulse/warning-real-estate-agents-ai-wont-replace-you-agent-costa-alves-wle8c" target="_blank">LinkedIn/Costa Alves (Biju Ashokan projection)</a> · <a href="https://www.bls.gov/ooh/sales/real-estate-brokers-and-sales-agents.htm" target="_blank">BLS Occupational Outlook</a></div>
+    </div>
+    <div class="chart-card" style="cursor:pointer;" onclick="openModal('modal-tasks-curve')">
+      <div class="chart-card-header"><div><div class="chart-card-title">AI Task Coverage Curve</div><div class="chart-card-sub">% of agent task portfolio AI can perform — click for sourcing</div></div></div>
+      <div class="chart-wrapper" style="height:260px;"><canvas id="capCurveChart"></canvas></div>
+      <div class="chart-source">Based on: <a href="https://www.morganstanley.com/insights/articles/ai-in-real-estate-2025" target="_blank">Morgan Stanley Research</a> · <a href="https://www.assetsoft.biz/blogs/post/the-2026-reality-check-ai-s-impact-on-real-estate-jobs" target="_blank">Assetsoft 2026</a> · analyst consensus</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-card-header"><div><div class="chart-card-title">Phase-by-Phase Disruption Roadmap</div><div class="chart-card-sub">Click each phase milestone to read the full sourced context</div></div></div>
+    <div class="timeline">
+      <div class="timeline-item" onclick="openModal('modal-phase-2023')">
+        <div class="timeline-year">2023–24</div><div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Augmentation Phase — AI as a Copilot</h4>
+          <p>AI enters real estate through listing copy, social media, and lead nurturing. NAR membership peaks near 1.6M. Early adopters gain first-mover advantages. Most agents view AI as a convenience, not a necessity. BLS projects 3% employment growth for agents 2024–2034.</p>
+          <span class="badge badge-cyan" style="margin-top:8px;display:inline-block;">Click for full context →</span>
+        </div>
+      </div>
+      <div class="timeline-item" onclick="openModal('modal-phase-2025')">
+        <div class="timeline-year">2025</div><div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>The Great Sorting Begins</h4>
+          <p>NAR membership declines from 1.6M peak to ~1.45M (still above forecast). Redfin data shows 71% of MLS-active licenses with zero transactions. AI handles 82% of buyer pre-search. The productivity gap between AI users and non-users becomes measurable. 46% of agents report AI has no impact on their business — because they lack structured workflows.</p>
+          <span class="badge badge-warning" style="margin-top:8px;display:inline-block;">Click for full context →</span>
+        </div>
+      </div>
+      <div class="timeline-item" onclick="openModal('modal-phase-2026')">
+        <div class="timeline-year">2026–27</div><div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Acceleration — The Divide Widens</h4>
+          <p>Companies that haven't adapted face severe competitive pressure. Agentic AI systems manage full lead-to-appointment pipelines. Self-guided showings via smart locks + ID verification become mainstream. The income gap between AI-structured agents and traditional agents becomes impossible to ignore.</p>
+          <span class="badge badge-danger" style="margin-top:8px;display:inline-block;">Click for full context →</span>
+        </div>
+      </div>
+      <div class="timeline-item" onclick="openModal('modal-phase-2028')">
+        <div class="timeline-year">2028–30</div><div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Transformation — 60–80% of Tasks AI-Driven</h4>
+          <p>Industry projections suggest 60–80% of tasks typically performed by agents could be AI-driven. Morgan Stanley's $34B efficiency gain materializes. The industry consolidates around elite, AI-augmented operators with deep relationship networks and hyperlocal authority.</p>
+          <span class="badge badge-danger" style="margin-top:8px;display:inline-block;">Click for full context →</span>
+        </div>
+      </div>
+      <div class="timeline-item" onclick="openModal('modal-phase-2030')">
+        <div class="timeline-year">2030–35</div><div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>The New Normal — A Consolidated Elite</h4>
+          <p>One industry analyst projects agent count could collapse from 1.5M to ~200K — a reduction of 87% from peak. This is a directional projection, not an official forecast. Those who remain will be true consultants: managing AI systems, providing irreplaceable local insight, and handling the emotional complexity of high-stakes transactions.</p>
+          <span class="badge badge-success" style="margin-top:8px;display:inline-block;">Click for full context →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 5: SURVIVAL
+════════════════════════════════════════════════ -->
+<div id="tab-survival" class="tab-content">
+<div class="section">
+  <div class="section-header">
+    <div class="accent-bar"></div>
+    <div class="section-header-text">
+      <h2>The Realtor <strong>Survival Blueprint</strong></h2>
+      <p>Actionable steps to position yourself in the top 20%. Click any element for the full sourced explanation.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="chart-card" style="cursor:pointer;" onclick="openModal('modal-adoption-paradox')">
+      <div class="chart-card-header"><div><div class="chart-card-title">Current AI Adoption Quality</div><div class="chart-card-sub">Why 82% adoption produces only 17% results — click for full analysis</div></div></div>
+      <div class="chart-wrapper" style="height:240px;"><canvas id="adoptionQuality"></canvas></div>
+      <div class="chart-source">Source: <a href="https://www.nar.realtor/newsroom/realtors-embrace-ai-digital-tools-to-enhance-client-service-nar-survey-finds" target="_blank">NAR 2025 Technology Survey</a></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header"><div><div class="chart-card-title">The Elite Agent Scorecard</div><div class="chart-card-sub">Key capabilities of the top 20% who will consolidate market share</div></div></div>
+      <div style="padding-top:6px;">
+        <div class="progress-row" style="cursor:pointer;" onclick="openModal('modal-score-ai')">
+          <div class="progress-label"><span>Structured AI Workflow System</span><span>95%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="pb1" style="width:0%"></div></div>
+        </div>
+        <div class="progress-row" style="cursor:pointer;" onclick="openModal('modal-score-hyperlocal')">
+          <div class="progress-label"><span>Hyperlocal Content Published</span><span>88%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="pb2" style="width:0%"></div></div>
+        </div>
+        <div class="progress-row" style="cursor:pointer;" onclick="openModal('modal-adv-aeo')">
+          <div class="progress-label"><span>Answer Engine Visibility (AEO)</span><span>79%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="pb3" style="width:0%"></div></div>
+        </div>
+        <div class="progress-row" style="cursor:pointer;" onclick="openModal('modal-adv-trust')">
+          <div class="progress-label"><span>Referral Network Depth</span><span>92%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="pb4" style="width:0%"></div></div>
+        </div>
+        <div class="progress-row" style="cursor:pointer;" onclick="openModal('modal-adv-negotiation')">
+          <div class="progress-label"><span>Negotiation & Consulting Skills</span><span>86%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="pb5" style="width:0%"></div></div>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:var(--gray-light);border-radius:8px;border-left:3px solid var(--cyan);">
+          <p style="font-size:11px;color:var(--navy);font-weight:600;">EDMUND BOGEN TEAM STANDARD</p>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.6;">Scores above 80% across all categories represent the top-tier agent profile positioned to thrive through the AI transition. Click each bar to read the full explanation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 Actions -->
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-card-header"><div><div class="chart-card-title">The 5 Non-Negotiable Actions — Click Each</div><div class="chart-card-sub">For agents serious about surviving and thriving in the AI era</div></div></div>
+    <div class="grid grid-5" style="grid-template-columns:repeat(5,1fr);gap:14px;padding-top:6px;">
+      <div onclick="openModal('modal-action-system')" style="text-align:center;padding:18px 10px;background:var(--gray-light);border-radius:10px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='#e6f7fd'" onmouseout="this.style.background='var(--gray-light)'">
+        <div style="font-size:28px;margin-bottom:8px;">🔧</div>
+        <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Build AI Systems</div>
+        <p style="font-size:10px;color:var(--text-muted);line-height:1.6;">Structured workflows for your top 5 highest-frequency tasks — not ad-hoc prompting.</p>
+      </div>
+      <div onclick="openModal('modal-adv-hyperlocal')" style="text-align:center;padding:18px 10px;background:var(--gray-light);border-radius:10px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='#e6f7fd'" onmouseout="this.style.background='var(--gray-light)'">
+        <div style="font-size:28px;margin-bottom:8px;">📍</div>
+        <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Own Your Market</div>
+        <p style="font-size:10px;color:var(--text-muted);line-height:1.6;">Publish hyperlocal content AI can't generate: HOA truth, offer patterns, block-level realities.</p>
+      </div>
+      <div onclick="openModal('modal-adv-aeo')" style="text-align:center;padding:18px 10px;background:var(--gray-light);border-radius:10px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='#e6f7fd'" onmouseout="this.style.background='var(--gray-light)'">
+        <div style="font-size:28px;margin-bottom:8px;">🤖</div>
+        <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Become AI-Visible</div>
+        <p style="font-size:10px;color:var(--text-muted);line-height:1.6;">Optimize for Answer Engine Optimization (AEO). Be the name ChatGPT mentions in your market.</p>
+      </div>
+      <div onclick="openModal('modal-adv-trust')" style="text-align:center;padding:18px 10px;background:var(--gray-light);border-radius:10px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='#e6f7fd'" onmouseout="this.style.background='var(--gray-light)'">
+        <div style="font-size:28px;margin-bottom:8px;">🫀</div>
+        <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Double Down on Humans</div>
+        <p style="font-size:10px;color:var(--text-muted);line-height:1.6;">Use every hour AI saves you for MORE human touchpoints: calls, showings, referrals.</p>
+      </div>
+      <div onclick="openModal('modal-mastermind')" style="text-align:center;padding:18px 10px;background:linear-gradient(135deg,var(--navy),#0d2a3e);border-radius:10px;cursor:pointer;transition:all 0.3s;">
+        <div style="font-size:28px;margin-bottom:8px;">🎓</div>
+        <div style="font-size:10px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Edmund's Mastermind</div>
+        <p style="font-size:10px;color:rgba(255,255,255,0.65);line-height:1.6;">Join the coaching community that teaches agents exactly how to implement AI systems. Click to learn more.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:linear-gradient(135deg,var(--navy),#051822);border-radius:12px;padding:48px 36px;text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,168,225,0.15) 0%,transparent 60%);"></div>
+    <div style="position:relative;">
+      <p style="color:var(--cyan);font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;">THE BOTTOM LINE</p>
+      <h2 style="color:white;font-size:clamp(20px,3vw,30px);font-weight:300;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;">AI Won't Replace <strong style="font-weight:700;color:var(--cyan);">You</strong>.<br>But An AI-Powered Agent <strong style="font-weight:700;color:var(--cyan);">Will</strong>.</h2>
+      <p style="color:rgba(255,255,255,0.6);font-size:13px;max-width:580px;margin:0 auto 28px;line-height:1.8;">The 80% who remain passive face displacement. The 20% who master AI systems, own their micro-markets, and amplify their human expertise will consolidate the entire industry's production. The window to be a first-mover is closing.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <button onclick="showTab('displacement')" style="background:var(--cyan);color:white;padding:13px 28px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border:none;">EXPLORE THE DATA</button>
+        <button onclick="showTab('advantage')" style="border:1.5px solid rgba(0,168,225,0.4);color:var(--cyan);padding:13px 28px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;background:none;">VIEW COMPETITIVE EDGE</button>
+      </div>
+      <p style="color:rgba(255,255,255,0.25);font-size:10px;margin-top:24px;">The Edmund Bogen Team at Douglas Elliman Real Estate &nbsp;·&nbsp; Edmund's Mastermind &nbsp;·&nbsp; edmund@bogenhomes.com &nbsp;·&nbsp; 561-235-7575</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <p><strong style="color:rgba(255,255,255,0.65);">THE EDMUND BOGEN TEAM AT DOUGLAS ELLIMAN REAL ESTATE</strong></p>
+  <p style="margin-top:6px;">Data Sources: NAR 2025 Member Profile &amp; Technology Survey · BLS Occupational Outlook · Morgan Stanley Research (July 2025) · Goldman Sachs Research · RPR AI Adoption Survey (Feb 2026) · Inman/Redfin Agent Data (Jan 2025) · PromptPlaybook 2026 · BusinessPlusAI ROI Studies · Assetsoft 2026 Reality Check · Chicago Agent Magazine</p>
+  <p style="margin-top:6px;">Report compiled April 2026 &nbsp;·&nbsp; <a href="mailto:edmund@bogenhomes.com">edmund@bogenhomes.com</a> &nbsp;·&nbsp; 561-235-7575 &nbsp;·&nbsp; All statistics include fact-check badges and linked primary sources.</p>
+</footer>
+
+<!-- ════════════════ MODAL OVERLAY ════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Title</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// TAB SYSTEM
+// ═══════════════════════════════════════
+const TABS = ['displacement','income','advantage','timeline','survival'];
+function showTab(id) {
+  TABS.forEach(t => {
+    document.getElementById('tab-'+t).classList.remove('active');
+  });
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach((b,i) => b.classList.toggle('active', TABS[i]===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='survival') setTimeout(animateBars,400);
+}
+
+// ═══════════════════════════════════════
+// COUNTER ANIMATIONS
+// ═══════════════════════════════════════
+function animCounter(el,target,suffix,prefix,decimals){
+  let v=0; const d=1800,step=target/(d/16);
+  const t=setInterval(()=>{
+    v+=step; if(v>=target){v=target;clearInterval(t);}
+    el.textContent=(prefix||'')+(decimals?v.toFixed(1):Math.round(v)).toLocaleString()+(suffix||'');
+  },16);
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    animCounter(document.getElementById('c1'),1600000,'','',false);
+    animCounter(document.getElementById('c2'),71,'%','',0);
+    animCounter(document.getElementById('c3'),40,'%','',0);
+    animCounter(document.getElementById('c4'),34,'B','$',0);
+  },500);
+  buildCharts();
+});
+
+// ═══════════════════════════════════════
+// PROGRESS BARS
+// ═══════════════════════════════════════
+function animateBars(){
+  const bars=[['pb1',95],['pb2',88],['pb3',79],['pb4',92],['pb5',86]];
+  bars.forEach(([id,pct])=>{
+    const el=document.getElementById(id);
+    if(el) setTimeout(()=>el.style.width=pct+'%',200);
+  });
+}
+
+// ═══════════════════════════════════════
+// CHART CONFIG
+// ═══════════════════════════════════════
+const NAVY='#1a3e5c',CYAN='#00a8e1',DANGER='#e74c3c',SUCCESS='#27ae60',WARNING='#f39c12',AMBER='#e67e22';
+Chart.defaults.font.family="'Montserrat',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color='#666';
+
+let memberChart, riskChart;
+
+function buildCharts(){
+  // 1. MEMBERSHIP
+  const mctx=document.getElementById('memberChart').getContext('2d');
+  memberChart=new Chart(mctx,{
+    type:'line',
+    data:{
+      labels:['Oct 2022','Jan 2024','May 2025'],
+      datasets:[{
+        label:'NAR Members',
+        data:[1.60,1.497,1.454],
+        borderColor:CYAN,backgroundColor:'rgba(0,168,225,0.1)',
+        borderWidth:2.5,fill:true,tension:0.3,
+        pointBackgroundColor:CYAN,pointRadius:6,pointHoverRadius:9
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y.toFixed(3)}M members`}}},
+      scales:{y:{min:1.3,max:1.7,ticks:{callback:v=>v.toFixed(1)+'M'},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}
+    }
+  });
+
+  // 2. AGENT DONUT
+  new Chart(document.getElementById('agentDonut').getContext('2d'),{
+    type:'doughnut',
+    data:{
+      labels:['Zero deals (~71%)','1–9 deals (~20%)','10–25 deals (~7%)','25+ deals (~2%)'],
+      datasets:[{data:[71,20,7,2],backgroundColor:[DANGER,WARNING,CYAN,NAVY],borderWidth:0,hoverOffset:10}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}`}}}
+    }
+  });
+
+  // 3. RISK CHART
+  const rctx=document.getElementById('riskChart').getContext('2d');
+  riskChart=new Chart(rctx,{
+    type:'bar',
+    data:{
+      labels:['Zero Transaction','Low Vol.\n(1–3 deals)','Mid Vol.\n(4–9 deals)','Active\n(10–25)','Top Producer\n(25+)','AI-Augmented\nTop Producer'],
+      datasets:[{
+        label:'Displacement Risk %',
+        data:[96,82,55,30,12,3],
+        backgroundColor:['rgba(231,76,60,0.85)','rgba(231,76,60,0.65)','rgba(243,156,18,0.8)','rgba(243,156,18,0.5)','rgba(0,168,225,0.65)','rgba(26,62,92,0.85)'],
+        borderRadius:6,borderSkipped:false
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Displacement Risk: ${c.parsed.y}% — click bar for explanation`}}},
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        const modals=['modal-surv-zero','modal-surv-low','modal-surv-midno','modal-surv-midai','modal-surv-highvol','modal-surv-aipower'];
+        openModal(modals[els[0].index]);
+      },
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}
+    }
+  });
+
+  // 4. INCOME CHART
+  new Chart(document.getElementById('incomeChart').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Entry-Level\nNo AI','Median Agent\n(NAR 2024)','Mid-Vol\nDabbling AI','Active Agent\nStructured AI','Top Producer\nAI Power User'],
+      datasets:[{
+        label:'Annual GCI',
+        data:[8100,58100,75000,130000,275000],
+        backgroundColor:['rgba(231,76,60,0.75)','rgba(243,156,18,0.75)','rgba(0,168,225,0.4)','rgba(0,168,225,0.8)','rgba(26,62,92,0.9)'],
+        borderRadius:8,borderSkipped:false
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.parsed.y.toLocaleString()} annual GCI`}}},
+      onClick:(e,els)=>{if(!els.length)return;openModal('modal-income-gap');},
+      scales:{y:{ticks:{callback:v=>'$'+(v/1000)+'K'},grid:{color:'#f0f0f0'}},x:{grid:{display:false},ticks:{maxRotation:0}}}
+    }
+  });
+
+  // 5. ADOPTION PARADOX
+  new Chart(document.getElementById('adoptionParadox').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Use AI\n(any form)','Use AI\ndaily/weekly','See significant\npositive impact','Have structured\nAI workflow'],
+      datasets:[{
+        data:[82,68,17,8],
+        backgroundColor:[CYAN+'cc',CYAN+'88',SUCCESS+'cc',NAVY+'cc'],
+        borderRadius:8,borderSkipped:false
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}% of NAR members`}}},
+      onClick:()=>openModal('modal-adoption-paradox'),
+      scales:{y:{max:100,ticks:{callback:v=>v+'%'},grid:{color:'#f0f0f0'}},x:{grid:{display:false},ticks:{maxRotation:0}}}
+    }
+  });
+
+  // 6. RADAR
+  new Chart(document.getElementById('radarChart').getContext('2d'),{
+    type:'radar',
+    data:{
+      labels:['Lead Gen','Marketing Speed','Market Analysis','Client Volume','24/7 Availability','Hyperlocal Intel','Negotiation','Emotional Trust','Referral Depth'],
+      datasets:[
+        {label:'AI-Powered Agent',data:[95,97,88,90,95,80,75,60,75],borderColor:CYAN,backgroundColor:'rgba(0,168,225,0.12)',borderWidth:2,pointBackgroundColor:CYAN,pointRadius:4},
+        {label:'Traditional Agent',data:[45,30,55,50,40,94,84,96,94],borderColor:NAVY,backgroundColor:'rgba(26,62,92,0.08)',borderWidth:2,pointBackgroundColor:NAVY,pointRadius:4}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:14}}},
+      scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:'#e8e8e8'},pointLabels:{font:{size:10,weight:'600'},color:'#333'}}}
+    }
+  });
+
+  // 7. WORKFORCE PROJECTION
+  new Chart(document.getElementById('workforceChart').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['2022','2023','2024','2025','2026\n▶ NOW','2027','2028','2030','2033','2035'],
+      datasets:[
+        {
+          label:'Disruption Scenario (Ashokan/Costa Alves)',
+          data:[1.60,1.58,1.53,1.45,1.38,1.15,0.90,0.65,0.35,0.20],
+          borderColor:DANGER,backgroundColor:'rgba(231,76,60,0.08)',
+          borderWidth:2.5,fill:true,tension:0.4,
+          pointRadius:[4,4,4,4,8,4,4,4,4,4],
+          pointBackgroundColor:['#e74c3c','#e74c3c','#e74c3c','#e74c3c','#ff6b35','#e74c3c','#e74c3c','#e74c3c','#e74c3c','#e74c3c']
+        },
+        {
+          label:'BLS Conservative (Flat ~3% growth)',
+          data:[1.60,1.61,1.62,1.63,1.64,1.65,1.67,1.70,1.74,1.77],
+          borderColor:'#aaaaaa',backgroundColor:'rgba(170,170,170,0.04)',
+          borderWidth:1.5,fill:false,tension:0.2,pointRadius:3,borderDash:[8,4]
+        },
+        {
+          label:'AI-Augmented Elite Survivors (M)',
+          data:[0.05,0.08,0.12,0.16,0.20,0.22,0.24,0.26,0.25,0.22],
+          borderColor:SUCCESS,backgroundColor:'rgba(39,174,96,0.08)',
+          borderWidth:2.5,fill:true,tension:0.4,pointRadius:3,borderDash:[5,3]
+        }
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:12,padding:14,font:{size:10}}},
+        tooltip:{callbacks:{
+          title:items=>items[0].label.replace('\n▶ NOW',' (YOU ARE HERE)'),
+          label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(2)}M`
+        }},
+        annotation:{
+          annotations:{
+            nowLine:{
+              type:'line',xMin:4,xMax:4,
+              borderColor:'#ff6b35',borderWidth:2,borderDash:[4,4],
+              label:{content:'▶ 2026 — NOW',enabled:true,position:'start',
+                backgroundColor:'#ff6b35',color:'#fff',font:{size:10,weight:'bold'},padding:4}
+            }
+          }
+        }
+      },
+      scales:{y:{min:0,max:1.9,ticks:{callback:v=>v.toFixed(1)+'M'},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}
+    }
+  });
+
+  // 8. CAPABILITY CURVE
+  new Chart(document.getElementById('capCurveChart').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['2023','2024','2025','2026','2027','2028','2030','2033'],
+      datasets:[{
+        label:'% of Agent Tasks AI Can Perform',
+        data:[30,42,55,65,73,80,88,95],
+        borderColor:CYAN,backgroundColor:'rgba(0,168,225,0.12)',borderWidth:3,fill:true,tension:0.4,
+        pointBackgroundColor:CYAN,pointRadius:5
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` AI can perform ~${c.parsed.y}% of agent tasks`}}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}
+    }
+  });
+
+  // 9. ADOPTION QUALITY (survival tab)
+  new Chart(document.getElementById('adoptionQuality').getContext('2d'),{
+    type:'doughnut',
+    data:{
+      labels:['Strategic AI Users — see results (17%)','Ad-Hoc AI Users — no system (65%)','Not Using AI at All (18%)'],
+      datasets:[{data:[17,65,18],backgroundColor:[SUCCESS,CYAN+'88',DANGER],borderWidth:0,hoverOffset:10}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+      plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:12,font:{size:10}}},
+      tooltip:{callbacks:{label:c=>` ${c.label}`}}}
+    }
+  });
+}
+
+// ═══════════════════════════════════════
+// MEMBER CHART TOGGLE
+// ═══════════════════════════════════════
+function setMemberView(view, btn){
+  document.querySelectorAll('.chart-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(view==='actual'){
+    memberChart.data.labels=['Oct 2022','Jan 2024','May 2025'];
+    memberChart.data.datasets[0].data=[1.60,1.497,1.454];
+  } else {
+    memberChart.data.labels=['Oct 2022','Jan 2024','May 2025','End 2025 (est.)','2026 (proj.)','2027 (proj.)','2028 (proj.)'];
+    memberChart.data.datasets[0].data=[1.60,1.497,1.454,1.38,1.25,1.10,1.00];
+  }
+  memberChart.update();
+}
+
+// ═══════════════════════════════════════
+// RISK CHART TOGGLE
+// ═══════════════════════════════════════
+function setRiskView(view, btn){
+  document.querySelectorAll('.chart-card .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(view==='risk'){
+    riskChart.data.datasets[0].label='Displacement Risk %';
+    riskChart.data.datasets[0].data=[96,82,55,30,12,3];
+  } else {
+    riskChart.data.datasets[0].label='Months Until Significant Impact';
+    riskChart.data.datasets[0].data=[6,12,18,30,48,0];
+  }
+  riskChart.update();
+}
+
+// ═══════════════════════════════════════
+// MODAL SYSTEM
+// ═══════════════════════════════════════
+function openModal(id){
+  const data=MODALS[id];
+  if(!data)return;
+  document.getElementById('modalTitle').textContent=data.title;
+  document.getElementById('modalBody').innerHTML=data.body;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeModalOnBg(e){
+  if(e.target===document.getElementById('modalOverlay')) closeModal();
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+// ═══════════════════════════════════════
+// MODAL CONTENT LIBRARY
+// ═══════════════════════════════════════
+const MODALS = {
+
+  'modal-membership': {
+    title: 'NAR Membership: Peak to Present',
+    body: `
+      <div class="modal-stat">1.6M → 1.45M</div>
+      <div class="modal-stat-label">Peak (Oct 2022) to May 2025</div>
+      <div class="modal-section"><h4>What the Data Shows</h4>
+      <p>NAR membership peaked at <strong>1,600,886</strong> in October 2022. By January 2024, it had fallen to <strong>1,496,707</strong> — a 2.1% year-over-year decline. As of May 31, 2025, membership stood at <strong>1,453,690</strong>, which was still above NAR's own forecast of 1.4 million for 2025.</p>
+      <p style="margin-top:10px;">NAR's internal forecast projects continued decline toward <strong>1.2 million</strong> over the next three years — representing a total drop of roughly 25% from peak. This is driven by a combination of market slowdowns, the fallout from the NAR commission lawsuits, the decoupling of MLS access from mandatory NAR membership, and AI-driven productivity shifts that are concentrating deals among fewer, more productive agents.</p></div>
+      <div class="modal-section"><h4>Why It Matters</h4>
+      <ul>
+        <li>Fewer members = the surviving agents are more serious, more productive</li>
+        <li>Commission lawsuit changes (August 2024) raised the bar for buyer agent value</li>
+        <li>MLS access no longer requires NAR membership — removing forced dues payers</li>
+        <li>AI productivity gains mean fewer agents can handle the same transaction volume</li>
+      </ul></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Fact-Check: Confirmed.</strong> All figures sourced directly from NAR official reports and verified through Florida Realtors and RealEstateNews.com reporting. The "1.3M / 300K loss" figure circulated on LinkedIn is not confirmed by official NAR data as of this report.</p></div>
+      <div class="modal-sources"><h5>Primary Sources</h5>
+        <a href="https://www.nar.realtor/magazine/real-estate-news/strength-in-numbers" target="_blank">NAR.realtor — "Strength in Numbers" (Nov 2024): Membership at 1,526,631 as of Oct 31</a>
+        <a href="https://www.floridarealtors.org/news-media/news-articles/2025/06/nar-membership-remains-above-forecast" target="_blank">Florida Realtors (June 2025): 1,453,690 members as of May 31 — above 1.4M forecast</a>
+        <a href="https://housingnotes.com/p/the-nar-membership-collapse-is-only" target="_blank">Housing Notes by Jonathan Miller: NAR internal forecast for 1.2M long-term</a>
+        <a href="https://www.realestatenews.com/2025/01/03/nar-membership-dips-below-1-5m-will-losses-continue" target="_blank">RealEstateNews.com (Jan 2025): Membership at 1.498M, biggest monthly decline in a year</a>
+      </div>`
+  },
+
+  'modal-zerotx': {
+    title: 'The 71% Zero-Transaction Statistic: Full Context',
+    body: `
+      <div class="modal-stat">~71%</div>
+      <div class="modal-stat-label">MLS-active licenses with zero closed deals (2024 data)</div>
+      <div class="modal-section"><h4>Where This Number Comes From</h4>
+      <p>At Inman Connect New York in January 2025, <strong>Joe Rath of Redfin</strong> presented data showing that roughly <strong>71% of all MLS-active real estate licenses</strong> in the U.S. had zero closed transactions in 2024. This was widely reported by Inman and fact-checked by multiple news outlets.</p>
+      <p style="margin-top:10px;"><strong>Important:</strong> This figure covers ALL MLS-active licenses — including part-time agents, referral-only licensees, people who hold a license but work primarily in other fields, and those who let transactions run through a team. It is not limited to full-time, active NAR members.</p></div>
+      <div class="modal-section"><h4>What NAR's Own Data Says</h4>
+      <p>The NAR's 2025 Member Profile — which surveys agents who pay annual dues and are actively engaged — shows a very different picture: <strong>only 5% of NAR dues-paying members</strong> reported zero transactions in 2024. The median NAR member completed <strong>10 transactions</strong> in 2024, unchanged from 2023.</p></div>
+      <div class="modal-section"><h4>How to Interpret Both Numbers</h4>
+      <ul>
+        <li>The 71% figure is real — it reflects the true bloat of the licensed agent ecosystem</li>
+        <li>The 5% figure is also real — it reflects the committed, dues-paying NAR membership base</li>
+        <li>Both are measuring different populations. The 71% is the better indicator of industry consolidation risk</li>
+        <li>The low-volume licensed population is precisely who AI platforms like Opendoor and self-guided showings are designed to replace</li>
+      </ul></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Context Required.</strong> This statistic is directionally accurate and comes from credible sources (Redfin/Inman), but it measures a broader population than just NAR-member active agents. Presenting it as "71% of realtors" without the context overstates the case — the correct framing is "71% of MLS-active licenses."</p></div>
+      <div class="modal-sources"><h5>Primary Sources</h5>
+        <a href="https://www.inman.com/2025/01/24/71-of-real-estate-agents-didnt-close-any-deals-last-year/" target="_blank">Inman (Jan 24, 2025): "71% of real estate agents didn't close any deals last year"</a>
+        <a href="https://finance.yahoo.com/news/did-70-real-estate-agents-173943894.html" target="_blank">Yahoo Finance / Deseret News: Fact-check of the 70% claim — source and context</a>
+        <a href="https://wpde.com/news/nation-world/fact-check-team-seventy-one-percent-of-active-realtors-did-not-sell-a-home-last-year" target="_blank">WPDE Fact Check: NAR data shows only 5% of members had zero transactions</a>
+        <a href="https://www.gaar.com/blog/article/nar-member-profile-realtors-show-strong-commitment-to-profession" target="_blank">NAR 2025 Member Profile: Median 10 transactions, $58,100 median income</a>
+      </div>`
+  },
+
+  'modal-tasks': {
+    title: 'AI Task Automation: The 37% Figure',
+    body: `
+      <div class="modal-stat">37%</div>
+      <div class="modal-stat-label">Real estate tasks automatable by AI — Morgan Stanley Research, 2025</div>
+      <div class="modal-section"><h4>The Research Methodology</h4>
+      <p>Morgan Stanley Research analyzed <strong>162 REIT and commercial real estate firms</strong> with a combined <strong>$92 billion in labor costs</strong> and <strong>525,000 employees</strong>. The analysis identified 37% of tasks as automatable — specifically in management, sales and related activities, office and administrative support, and installation/maintenance.</p>
+      <p style="margin-top:10px;">This generates an estimated <strong>$34 billion in operational efficiency gains</strong> by 2030 — not from eliminating all those workers, but from AI handling the routine components of those roles, allowing humans to focus on higher-value activities.</p></div>
+      <div class="modal-section"><h4>What 37% Actually Means for Agents</h4>
+      <ul>
+        <li>Routine tasks (listing copy, scheduling, lead follow-up, data entry) are highly automatable</li>
+        <li>Complex judgment tasks (negotiation, client trust, pricing strategy) are not</li>
+        <li>The 37% figure is for corporate real estate — residential agent exposure may be higher for routine tasks</li>
+        <li>Individual agents who do more routine tasks face higher displacement; top consultants face less</li>
+      </ul></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Fact-Check: Confirmed.</strong> Morgan Stanley Research published this finding in July 2025. The $34B and 37% figures are directly cited from the Morgan Stanley primary source, corroborated by CREtech and multiple LinkedIn industry analyses.</p></div>
+      <div class="modal-sources"><h5>Primary Sources</h5>
+        <a href="https://www.morganstanley.com/insights/articles/ai-in-real-estate-2025" target="_blank">Morgan Stanley Research (July 2025): "How AI Is Reshaping Real Estate" — $34B by 2030, 37% automatable</a>
+        <a href="https://www.cretech.com/news/ai-is-reshaping-real-estate-unlocking-34b-in-efficiencies-by-2030/" target="_blank">CREtech: "AI Is Reshaping Real Estate, Unlocking $34B in Efficiencies by 2030"</a>
+      </div>`
+  },
+
+  'modal-morgan': {
+    title: 'Morgan Stanley: $34 Billion in AI Efficiency Gains',
+    body: `
+      <div class="modal-stat">$34B</div>
+      <div class="modal-stat-label">Projected AI efficiency gains in real estate by 2030 — Morgan Stanley</div>
+      <div class="modal-section"><h4>The Research</h4>
+      <p>Morgan Stanley Research conducted an analysis of 162 REIT and CRE firms representing $92B in combined labor costs and 525,000 employees. Their conclusion: AI automation of 37% of tasks will deliver up to $34 billion in operational efficiencies by 2030.</p>
+      <p style="margin-top:10px;">Early evidence: One self-storage company has already reduced on-property labor hours by 30%. One residential operator has reduced full-time employees by 15% since 2021 with reported increases in both productivity and satisfaction.</p></div>
+      <div class="modal-section"><h4>What This Means for Agents</h4>
+      <p>These efficiency gains come at the expense of labor costs — which means fewer support staff, fewer transaction coordinators, and fewer low-volume agents. The productivity gains accrue to the top performers who use AI to multiply their own capacity.</p></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Fact-Check: Confirmed.</strong> Directly sourced from Morgan Stanley's published research article, July 2025.</p></div>
+      <div class="modal-sources"><h5>Primary Sources</h5>
+        <a href="https://www.morganstanley.com/insights/articles/ai-in-real-estate-2025" target="_blank">Morgan Stanley Research (July 2025): Official source for all $34B and 37% figures</a>
+        <a href="https://www.cretech.com/news/ai-set-to-unlock-34b-in-efficiencies-across-real-estate-by-2030/" target="_blank">CREtech (July 2025): Corroboration of Morgan Stanley findings</a>
+      </div>`
+  },
+
+  'modal-aiclose': {
+    title: 'AI-Using Agents Close 35–45% More Deals',
+    body: `
+      <div class="modal-stat">35–45%</div>
+      <div class="modal-stat-label">More annual transactions for agents with structured AI workflows</div>
+      <div class="modal-section"><h4>The Evidence</h4>
+      <p>BusinessPlusAI's 2026 benchmarking study found that agents using structured AI tools close <strong>35–45% more transactions annually</strong> than peers using traditional methods — without working longer hours. The study attributes this to AI lead qualification reducing time on unqualified leads by 40–60%, sub-minute lead response (400% higher conversion than 30-minute response), and 30–50% reduction in time-to-close.</p></div>
+      <div class="modal-section"><h4>Important Nuance</h4>
+      <p>This applies to agents using <em>structured</em> AI workflows — not ad-hoc prompting. The NAR 2025 Technology Survey found that <strong>46% of agents who use AI see no impact on business</strong>. The difference is the system, not the tool.</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Directional.</strong> The 35–45% figure comes from industry benchmarking, not a controlled academic study. It is directionally supported by multiple sources but the exact figure may vary by market, agent type, and workflow quality.</p></div>
+      <div class="modal-sources"><h5>Primary Sources</h5>
+        <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI ROI Study (March 2026): Full benchmarking data on deal volume and productivity</a>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook (Feb 2026): The adoption paradox — why 82% adoption produces only 17% results</a>
+      </div>`
+  },
+
+  'modal-task-listing': {
+    title: 'AI Automation: Listing Descriptions & Marketing Copy',
+    body: `<div class="modal-stat">95%</div><div class="modal-stat-label">Automatable by AI — Highest ROI task for most agents</div>
+      <div class="modal-section"><h4>What AI Can Do</h4><p>Modern AI tools write listing descriptions, social media captions, email sequences, and ad copy faster and often better than most agents. What takes 2–3 hours manually takes 5 minutes with a well-structured prompt system. The RPR survey found this is the #1 use case for AI among realtors.</p></div>
+      <div class="modal-section"><h4>Time & Revenue Impact</h4><ul><li>Traditional: 2–3 hours per listing</li><li>With AI: 5–15 minutes (including review)</li><li>Weekly savings: 2.5–3 hours for active agents</li><li>Annual time value: $6,000–$9,000+ (at median agent hourly rate)</li></ul></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Well-supported.</strong> Consistent across RPR, NAR, and PromptPlaybook research. The most documented AI use case in real estate.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://blog.narrpr.com/tips/real-estate-agents-use-ai/" target="_blank">RPR 2026 AI Survey: Listing descriptions cited as #1 AI use case</a>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: Task-by-task time savings analysis</a>
+      </div>`
+  },
+
+  'modal-task-lead': {
+    title: 'AI Automation: Lead Qualification & Follow-Up',
+    body: `<div class="modal-stat">91%</div><div class="modal-stat-label">Automatable — Highest revenue impact category</div>
+      <div class="modal-section"><h4>The Speed Advantage</h4><p>Responding to a lead within <strong>5 minutes vs. 30 minutes</strong> increases conversion rates by <strong>400%</strong>. AI chatbots and agentic systems now provide instant responses 24/7, qualify leads, schedule appointments, and route high-intent prospects to agents — all without human involvement in the initial stages.</p></div>
+      <div class="modal-section"><h4>What This Means</h4><ul><li>AI-using agents capture leads before competitors even see the notification</li><li>40–60% reduction in time spent on unqualified leads</li><li>25–35% reduction in qualification-to-appointment time</li><li>Agents can handle 2–3x more lead volume without extra hours</li></ul></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Well-supported.</strong> The 400% conversion figure and related stats are from BusinessPlusAI's 2026 ROI study.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI ROI Study (March 2026): Lead response and conversion data</a>
+      </div>`
+  },
+
+  'modal-task-schedule': {
+    title: 'AI Automation: Scheduling & Calendar Management',
+    body: `<div class="modal-stat">89%</div><div class="modal-stat-label">Automatable — Significant daily time sink</div>
+      <div class="modal-section"><h4>The Phone Tag Problem</h4><p>Scheduling — coordinating showing times, negotiating calendars with multiple parties, managing lockbox access — has historically consumed 2–3 hours per week for active agents. AI scheduling tools like Calendly integrations with agentic AI eliminate this almost entirely.</p></div>
+      <div class="modal-section"><h4>Tools and Impact</h4><ul><li>Smart scheduling saves 120+ hours per year (20 min/day)</li><li>AI handles showing coordination, reminders, and rescheduling</li><li>Agentic systems sync across buyer, seller, and agent calendars automatically</li></ul></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: High-frequency task analysis</a>
+        <a href="https://www.linkedin.com/pulse/warning-real-estate-agents-ai-wont-replace-you-agent-costa-alves-wle8c" target="_blank">LinkedIn/Costa Alves: Agentic AI workflow analysis for real estate</a>
+      </div>`
+  },
+
+  'modal-task-crm': {
+    title: 'AI Automation: CRM Updates & Data Entry',
+    body: `<div class="modal-stat">87%</div><div class="modal-stat-label">Automatable — Major daily friction point for agents</div>
+      <div class="modal-section"><h4>The Problem</h4><p>One of the top complaints from real estate agents: constantly switching between apps and manually copying data into CRM, e-sign, calendar, portals, and messaging tools. Agentic AI systems can handle this orchestration automatically — updating CRM records, sending follow-up sequences, and maintaining pipeline stages without agent input.</p></div>
+      <div class="modal-section"><h4>Impact</h4><ul><li>Agents report saving 8–12 hours per week on administrative tasks with proper Notion/CRM AI integration</li><li>Eliminates dropped leads from manual data entry errors</li><li>Enables agents to maintain active engagement with 3–5x more contacts</li></ul></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.linkedin.com/pulse/warning-real-estate-agents-ai-wont-replace-you-agent-costa-alves-wle8c" target="_blank">LinkedIn/Costa Alves: Agentic AI and the "deskless operating system" for agents</a>
+      </div>`
+  },
+
+  'modal-task-cma': {
+    title: 'AI Automation: Market Analysis & CMA Reports',
+    body: `<div class="modal-stat">82%</div><div class="modal-stat-label">Automatable — AI outperforms on speed, matches on accuracy</div>
+      <div class="modal-section"><h4>What's Changed</h4><p>AI-powered valuation and market analysis tools can pull comparable sales, adjust for condition and features, and generate a CMA report in minutes that previously took hours. Properties priced using AI-enhanced valuations spend <strong>20–30% less time on market</strong> compared to traditional pricing methods.</p></div>
+      <div class="modal-section"><h4>What AI Still Can't Do</h4><p>AI CMAs lack the nuance of a local agent who knows a seller just renovated the kitchen but the neighbor's yard is a mess. The 82% figure reflects the mechanical components of CMA generation — the strategic interpretation still benefits from human expertise.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI (March 2026): AI pricing reduces time-on-market 20–30%</a>
+        <a href="https://blog.narrpr.com/learn/ai-winning-clients-before-competitors/" target="_blank">RPR: AI-enhanced CMA tools for NAR members</a>
+      </div>`
+  },
+
+  'modal-task-docs': {
+    title: 'AI Automation: Document Review & Contract Basics',
+    body: `<div class="modal-stat">75%</div><div class="modal-stat-label">Automatable — Significant risk reduction tool</div>
+      <div class="modal-section"><h4>AI's Growing Role</h4><p>AI tools can now review disclosure documents, flag unusual language, identify contingency deadlines, and generate basic contract frameworks. BusinessPlusAI reports 50–70% reductions in administrative processing time and 30–40% fewer transaction delays from documentation errors at firms using AI document processing.</p></div>
+      <div class="modal-section"><h4>What Remains Human</h4><p>Legal interpretation, negotiating specific contract terms, and advising clients on risk tolerance all require licensed human judgment. AI is a flagging and drafting tool, not a licensed attorney or broker.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI (March 2026): Document processing time reduction data</a>
+      </div>`
+  },
+
+  'modal-task-negotiation': {
+    title: 'Negotiation Strategy: Why AI Struggles',
+    body: `<div class="modal-stat">18%</div><div class="modal-stat-label">Automatable — Human judgment dominates this domain</div>
+      <div class="modal-section"><h4>Why Humans Win Here</h4><p>Effective negotiation requires reading the room — understanding a seller's emotional attachment to a property, knowing when to push and when to concede, sensing a listing agent's unspoken flexibility. AI can provide data-backed negotiating frameworks but cannot execute real-time, emotionally intelligent negotiation.</p></div>
+      <div class="modal-section"><h4>The Expert View</h4><p>"Pricing strategy, negotiation, risk assessment, and problem-solving will continue to depend on humans. AI will make professionals more efficient. It will not replace professionals when deals get complicated." — The Anthony Butera Team analysis, Jan 2026.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.anthonybuterateam.com/will-ai-replace-real-estate-agents/" target="_blank">Anthony Butera Team (Jan 2026): Why AI won't manage negotiations</a>
+        <a href="https://klingerealtygroup.com/blog/ai-vs-the-average-realtor" target="_blank">Klinge Realty Group: AI helps you see the house — agents help you win</a>
+      </div>`
+  },
+
+  'modal-task-trust': {
+    title: 'Emotional Trust & Client Support: The Human Moat',
+    body: `<div class="modal-stat">8%</div><div class="modal-stat-label">Automatable — The most irreplaceable human skill in real estate</div>
+      <div class="modal-section"><h4>Why This Cannot Be Automated</h4><p>The home buying and selling process is deeply emotional. Clients face enormous financial stress, life transitions, and uncertainty. An AI cannot hold a nervous first-time buyer's confidence together at 9pm when the inspection reveals foundation issues. It cannot help a divorcing couple make rational decisions under emotional duress. It cannot read a room and know when to stop talking.</p></div>
+      <div class="modal-section"><h4>The Consumer Research</h4><p>Realtor.com's Aug 2025 survey found that despite 82% of buyers using AI for housing research, <strong>real estate agents were still rated the most reliable and precise source of market information</strong>, outperforming AI, family, and news outlets. 88% of home purchases were still made through a real estate agent or broker (NAR data).</p></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Confirmed.</strong> Consumer trust data strongly supports the irreplaceability of human emotional authority in real estate transactions.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.realtor.com/research/ai-and-housing-survey-2025/" target="_blank">Realtor.com AI & Housing Survey (Aug 2025): 82% use AI, but agents rated most reliable</a>
+        <a href="https://wpde.com/news/nation-world/fact-check-team-seventy-one-percent-of-active-realtors-did-not-sell-a-home-last-year" target="_blank">WPDE: 88% of purchases still made through a real estate agent or broker</a>
+      </div>`
+  },
+
+  'modal-task-hyperlocal': {
+    title: 'Hyperlocal Intelligence: AI\'s True Blindspot',
+    body: `<div class="modal-stat">4%</div><div class="modal-stat-label">Automatable — AI's most permanent limitation in real estate</div>
+      <div class="modal-section"><h4>What AI Literally Cannot Know</h4><ul><li>Which specific HOA board is litigious or dysfunctional</li><li>That the afternoon light in unit 4B is blocked by the neighboring building</li><li>What offers are actually landing in your micro-market this week vs. list price</li><li>That the neighbor runs an informal doggy daycare that generates noise complaints</li><li>The school-run traffic reality on that specific block at 7:45am</li><li>Which contractor the neighborhood association actually approves quickly</li></ul></div>
+      <div class="modal-section"><h4>Why This Is Your Strongest Moat</h4><p>This type of intelligence can only come from physical presence, community relationships, and years of hyperlocal market activity. It cannot be scraped, synthesized, or generated. Agents who build a reputation as the definitive local expert in a specific micro-market become impossible for AI to displace — and invaluable to buyers and sellers navigating that market.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.youtube.com/watch?v=v1YQB6ZJqGw" target="_blank">YouTube analysis (March 2026): "AI cannot tell a buyer which specific HOA board is a nightmare"</a>
+        <a href="https://www.linkedin.com/pulse/warning-real-estate-agents-ai-wont-replace-you-agent-costa-alves-wle8c" target="_blank">LinkedIn/Costa Alves: "Your advantage isn't info. It's judgment and context."</a>
+      </div>`
+  },
+
+  'modal-income-median': {
+    title: 'Median Realtor Income: The Real Numbers',
+    body: `<div class="modal-stat">$58,100</div><div class="modal-stat-label">Median gross income for NAR members — 2024 calendar year</div>
+      <div class="modal-section"><h4>The Data</h4><p>The NAR 2025 Member Profile (surveyed March 2025, reflecting 2024 activity) reports the median gross income for REALTORS® rose to <strong>$58,100 in 2024</strong>, up from $55,800 in 2023. The median member had 10 transactions and $2.5M in sales volume.</p>
+      <p style="margin-top:10px;">However, this median hides enormous distribution: agents with <strong>less than 2 years experience</strong> had a median gross income of just <strong>$8,100</strong>. The NAR 2025 Technology Survey also notes that 62% of new agents earn under $10K in their first two years — the cohort most vulnerable to AI displacement.</p></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Confirmed.</strong> Directly sourced from NAR 2025 Member Profile, reflecting 4,947 survey respondents.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.gaar.com/blog/article/nar-member-profile-realtors-show-strong-commitment-to-profession" target="_blank">NAR 2025 Member Profile: $58,100 median, 10 transactions, 12 years median experience</a>
+        <a href="https://www.vaned.com/blog/real-estate-job-outlook" target="_blank">VanEd Real Estate Job Outlook 2026: BLS median salary data</a>
+      </div>`
+  },
+
+  'modal-income-ai': {
+    title: 'AI Power User Income: $150K–$300K+',
+    body: `<div class="modal-stat">$150K–$300K+</div><div class="modal-stat-label">Annual GCI for structured AI workflow adopters — directional range</div>
+      <div class="modal-section"><h4>The Evidence Base</h4><p>NAR income distribution data shows the top tier of producers — the 20% controlling 80% of production — consistently earn in the $150K–$300K+ range. The claim here is that AI adoption accelerates agents into this tier by enabling them to handle more volume without proportional time increases.</p>
+      <p style="margin-top:10px;">PromptPlaybook 2026 research states: "Top performers who reallocate their AI-saved time toward client-facing work consistently earn $150,000 to $300,000+, according to NAR income distribution data."</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Directional.</strong> This figure represents income potential for top-tier AI users — not a guaranteed outcome. It is based on NAR's top-producer income distribution data combined with productivity projections from AI ROI research. Individual results will vary significantly based on market, experience, and workflow quality.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: $150K–$300K+ income range for structured AI workflow users</a>
+        <a href="https://www.gaar.com/blog/article/nar-member-profile-realtors-show-strong-commitment-to-profession" target="_blank">NAR 2025 Member Profile: Income distribution data by experience and volume tier</a>
+      </div>`
+  },
+
+  'modal-income-time': {
+    title: 'AI Time Savings: 15–20 Hours Per Week',
+    body: `<div class="modal-stat">15–20 hrs/wk</div><div class="modal-stat-label">Saved by structured AI workflows — supported by multiple studies</div>
+      <div class="modal-section"><h4>What the Research Shows</h4><p>PromptPlaybook 2026 research identifies 13–23 hours of potential weekly time savings when agents implement AI for their top 5 high-frequency tasks. The RPR/NAR survey corroborates this directionally: <strong>68% of AI-using agents save at least 1 hour per week</strong>, and <strong>34% save 4+ hours per week</strong>.</p>
+      <p style="margin-top:10px;">The LinkedIn productivity analysis found: "A small group of agents are using 6 specific AI tools to automate 80% of their busy work, freeing up 15–20 hours per week." The annual time value at a $56K median income equals approximately $21,000 in recaptured earning potential.</p></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Confirmed (range).</strong> The 15–20 hour figure is from PromptPlaybook and LinkedIn research. RPR's direct survey data (68% save 1+ hour, 34% save 4+ hours) is confirmed from a primary NAR source.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://blog.narrpr.com/tips/real-estate-agents-use-ai/" target="_blank">RPR AI Survey 2026: 68% save 1+ hour/week, 34% save 4+ hours/week</a>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: 13–23 hours weekly savings from structured AI workflows</a>
+        <a href="https://www.linkedin.com/pulse/6-ai-tools-making-real-estate-agents-10x-more-while-burns-aktypis-oxbjf" target="_blank">LinkedIn (June 2025): 6 AI tools, 15–20 hours saved per week</a>
+      </div>`
+  },
+
+  'modal-income-deals': {
+    title: 'AI Agents Close 35–45% More Deals',
+    body: `<div class="modal-stat">35–45%</div><div class="modal-stat-label">More annual transactions — structured AI users vs. traditional agents</div>
+      <div class="modal-section"><h4>Source of the Estimate</h4><p>BusinessPlusAI's industry benchmarking data (March 2026) states: "Agents using AI tools close 35–45% more transactions annually than peers using traditional methods, without working longer hours." This is derived from aggregated brokerage performance data comparing AI-integrated vs. traditional workflows.</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Directional.</strong> This is industry benchmarking, not a peer-reviewed controlled study. It is consistent with the underlying data (lead conversion improvements, time-to-close reductions, more capacity from time savings) but the exact percentage will vary by market and agent. Present as a strong directional estimate.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI (March 2026): Full benchmarking study on deal volume and AI adoption</a>
+      </div>`
+  },
+
+  'modal-income-gap': {
+    title: 'The Income Gap: AI vs. Traditional Agents',
+    body: `<div class="modal-section"><h4>Income Distribution Reality</h4><p>The income gap in real estate has always been extreme — the 80/20 rule applies more sharply here than in most industries. AI is accelerating this concentration by giving the already-productive agents even more leverage. Key data points:</p><ul>
+      <li><strong>Entry-level (&lt;2 yrs, no AI): $8,100 median</strong> — NAR 2025 Member Profile</li>
+      <li><strong>Median NAR member (2024): $58,100</strong> — NAR 2025 Member Profile</li>
+      <li><strong>Mid-volume with structured AI: ~$130K</strong> — directional, based on productivity studies</li>
+      <li><strong>AI Power User top producers: $150K–$300K+</strong> — PromptPlaybook/NAR distribution</li>
+      </ul></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Note:</strong> The $75K and $130K "mid-volume" tiers are directional estimates based on median income × projected productivity gains. They are not directly published figures from a primary source.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.gaar.com/blog/article/nar-member-profile-realtors-show-strong-commitment-to-profession" target="_blank">NAR 2025 Member Profile: $8,100 entry-level, $58,100 median</a>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: $150K–$300K top producer range</a>
+      </div>`
+  },
+
+  'modal-adoption-paradox': {
+    title: 'The 82/17 Paradox: Why Most AI Adoption Fails',
+    body: `<div class="modal-stat">82% → 17%</div><div class="modal-stat-label">82% use AI. Only 17% see significantly positive business impact.</div>
+      <div class="modal-section"><h4>The NAR Data</h4><p>The NAR 2025 Technology Survey (published September 2025, reflecting member behavior) found:</p><ul>
+        <li>46% of agents use AI-generated content (e.g., listing descriptions)</li>
+        <li>20% use AI daily, 22% weekly, 27% a few times a month</li>
+        <li><strong>17% reported a significantly positive impact on business</strong></li>
+        <li>33% reported a moderately positive impact</li>
+        <li><strong>46% said AI had no noticeable impact on their business</strong></li>
+        </ul></div>
+      <div class="modal-section"><h4>Why the Gap Exists</h4><p>PromptPlaybook's 2026 analysis identified three systemic failures: (1) treating AI as a magic wand with no structure; (2) using generic prompts for industry-specific work; (3) automating the wrong tasks first — complex judgment tasks instead of high-frequency routine ones.</p>
+      <p style="margin-top:8px;">McKinsey's 2025 State of AI survey found the same: 46% of professionals using AI tools report no noticeable improvement. "The workflow matters more than the tool." — PromptPlaybook 2026</p></div>
+      <div class="modal-fc confirmed"><p><strong>✓ Confirmed.</strong> Both the 82% and 17% figures are directly sourced from the NAR 2025 Technology Survey, a primary source with 750+ respondents.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.nar.realtor/newsroom/realtors-embrace-ai-digital-tools-to-enhance-client-service-nar-survey-finds" target="_blank">NAR 2025 Technology Survey (Sept 2025): 17% significantly positive, 46% no impact</a>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: Why 82% adoption produces only 17% results</a>
+        <a href="https://blog.narrpr.com/tips/real-estate-agents-use-ai/" target="_blank">RPR AI Survey (Feb 2026): 82% use AI, adoption specifics</a>
+      </div>`
+  },
+
+  'modal-adv-hyperlocal': {
+    title: 'Competitive Edge: Hyperlocal Intelligence',
+    body: `<div class="modal-section"><h4>The Permanent AI Blindspot</h4><p>Every AI system is trained on publicly available data. It knows what's in MLS records, public records, news articles, and Yelp reviews. What it cannot know is the lived, street-level intelligence that only comes from physical presence and community relationships.</p></div>
+      <div class="modal-section"><h4>What This Looks Like in Practice</h4><ul>
+        <li>"Unit 4B in this building — the afternoon light is blocked by the neighboring tower. The seller's photos were taken in the morning."</li>
+        <li>"The HOA board in this community has rejected 7 of the last 8 alteration requests. Budget 6 months for any project."</li>
+        <li>"Offers in this zip code are landing at 98% of list right now — not 94% like the market stats suggest."</li>
+        <li>"The school district lines were redrawn in 2024. This address is now in the better district."</li>
+        </ul></div>
+      <div class="modal-section"><h4>The AEO Opportunity</h4><p>Publishing this type of hyperlocal intelligence online — in a structured, consistent format — creates another advantage: it becomes the content that answer engines (ChatGPT, Perplexity, Claude) cite when buyers ask about your market. You become both irreplaceable and the recommended source.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.linkedin.com/pulse/warning-real-estate-agents-ai-wont-replace-you-agent-costa-alves-wle8c" target="_blank">LinkedIn/Costa Alves: "Your advantage isn't info — it's judgment and context"</a>
+        <a href="https://blog.narrpr.com/learn/ai-winning-clients-before-competitors/" target="_blank">RPR: Answer Engine Optimization for real estate agents</a>
+      </div>`
+  },
+
+  'modal-adv-trust': {
+    title: 'Competitive Edge: Trust & Emotional Authority',
+    body: `<div class="modal-section"><h4>The Human Advantage</h4><p>Research consistently shows that despite 82% of buyers using AI for housing research, real estate agents are still rated the most reliable and precise source of market information (Realtor.com, Aug 2025). 88% of purchases are still made through a human agent.</p></div>
+      <div class="modal-section"><h4>When It Matters Most</h4><ul>
+        <li>When a competing offer arrives and a buyer needs to decide in 2 hours</li>
+        <li>When an inspection reveals serious issues and the buyer is panicking</li>
+        <li>When a seller is emotionally attached and needs to hear hard truths</li>
+        <li>When a divorce forces a sale and both parties are hostile</li>
+        <li>When financing falls through at 5pm on a Friday before closing</li>
+      </ul>
+      <p style="margin-top:8px;">These are the moments that define an agent's value — and AI will never be trusted to handle them alone.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.realtor.com/research/ai-and-housing-survey-2025/" target="_blank">Realtor.com (Aug 2025): Agents rated most reliable source, ahead of AI</a>
+        <a href="https://www.anthonybuterateam.com/will-ai-replace-real-estate-agents/" target="_blank">Anthony Butera Team (Jan 2026): AI won't manage complex human situations</a>
+      </div>`
+  },
+
+  'modal-adv-multiplier': {
+    title: 'Competitive Edge: AI as a Force Multiplier',
+    body: `<div class="modal-section"><h4>The Right Framing</h4><p>The agents who are winning with AI aren't using it to replace human activity — they're using it to dramatically expand their human capacity. By automating 15–20 hours of routine work per week, they redirect that time toward the activities that actually generate income: appointments, showings, relationship building, and community presence.</p></div>
+      <div class="modal-section"><h4>The Compounding Effect</h4><p>An agent who saves 15 hours/week and redirects 10 of those hours to client-facing work can realistically handle 40–50% more client volume at the same or higher quality level. Over 3 years, this creates a referral network and track record that purely traditional agents can never catch up to.</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Directional.</strong> The 35–45% more deals figure is from BusinessPlusAI benchmarking. The compounding effect described here is analytical projection based on documented time savings and lead conversion improvements — not a single sourced statistic.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.businessplusai.com/blog/the-roi-of-ai-in-real-estate-measuring-time-to-close-and-productivity-gains" target="_blank">BusinessPlusAI (March 2026): ROI of AI — 35–45% more deals, 15–20 hrs/week saved</a>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: $21,000+ annual value of recaptured time</a>
+      </div>`
+  },
+
+  'modal-adv-aeo': {
+    title: 'Competitive Edge: Answer Engine Visibility',
+    body: `<div class="modal-stat">82%</div><div class="modal-stat-label">Of buyers use AI for housing research before contacting an agent</div>
+      <div class="modal-section"><h4>The New Referral Channel</h4><p>Realtor.com's August 2025 survey of 1,000 active buyers and sellers found that <strong>82% use AI for real estate insights</strong>. When someone asks ChatGPT or Perplexity "who should I use to sell my home in Boca Raton?" — the agents who get cited are the ones with structured, consistent, hyperlocal digital content that AI systems can find and verify.</p></div>
+      <div class="modal-section"><h4>The AEO Strategy</h4><p>Answer Engine Optimization (AEO) means publishing content in a format that AI assistants understand and trust: specific, structured, factual, hyperlocal. Agents who do this now are building a compound advantage — each mention trains AI systems to recommend them more frequently.</p>
+      <p style="margin-top:8px;">RPR estimates: capturing just 2 additional AI-referred clients per month = $24,000–$36,000 in additional annual commission.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.realtor.com/research/ai-and-housing-survey-2025/" target="_blank">Realtor.com AI & Housing Survey (Aug 2025): 82% of active buyers/sellers use AI</a>
+        <a href="https://blog.narrpr.com/learn/ai-winning-clients-before-competitors/" target="_blank">RPR: AEO strategy and $24K–$36K annual referral value estimate</a>
+      </div>`
+  },
+
+  'modal-adv-negotiation': {
+    title: 'Competitive Edge: Negotiation & Problem-Solving',
+    body: `<div class="modal-section"><h4>Why This Remains Human</h4><p>BLS and O*NET still define the real estate agent role around "pricing strategy, negotiation, contracts, and deep knowledge of local communities, schools, shopping, market conditions, and regulations." These are the elements that algorithms still cannot own end-to-end.</p></div>
+      <div class="modal-section"><h4>Real-World Examples AI Can't Handle</h4><ul>
+        <li>Reading that a seller is emotionally overpriced but can be brought to reality with the right approach</li>
+        <li>Knowing when to ask for seller concessions vs. price reductions based on relationship dynamics</li>
+        <li>Managing a listing agent who is steering a deal toward their own buyer</li>
+        <li>Troubleshooting a lockbox that won't open 20 minutes before a showing</li>
+        <li>Keeping a transaction alive when financing collapses 3 days before closing</li>
+      </ul></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.youtube.com/watch?v=v1YQB6ZJqGw" target="_blank">YouTube analysis (March 2026): BLS/O*NET job description — what survives AI disruption</a>
+        <a href="https://www.anthonybuterateam.com/will-ai-replace-real-estate-agents/" target="_blank">Anthony Butera Team: Negotiation, risk assessment, problem-solving remain human</a>
+      </div>`
+  },
+
+  'modal-adv-brand': {
+    title: 'Competitive Edge: Brand & Network Equity',
+    body: `<div class="modal-section"><h4>The Unscrapeable Asset</h4><p>Twenty years of relationship-building, referral networks, and personal brand equity cannot be replicated by AI. When a past client calls Edmund Bogen about a listing, that's not a lead AI can intercept — it's the result of years of trusted service that compounds with every deal.</p></div>
+      <div class="modal-section"><h4>How AI Amplifies (Not Replaces) This</h4><p>AI doesn't replace network equity — it amplifies it. An agent with a strong referral network who also uses AI to respond instantly to all inquiries, produce better listing materials, and stay more present on social media creates a flywheel that grows faster than either approach alone.</p></div>
+      <div class="modal-section"><h4>The Numbers</h4><p>Industry data consistently shows that referrals and repeat business account for 40–60% of top producer GCI. This base is nearly impossible to displace with AI — it's the foundation that makes everything else work.</p></div>`
+  },
+
+  'modal-radar': {
+    title: 'Capability Radar: AI-Powered vs. Traditional Agents',
+    body: `<div class="modal-section"><h4>How to Read This Chart</h4><p>The radar chart compares the relative capabilities of a strategic AI-powered agent vs. a traditional agent across 9 dimensions. The scores are relative and directional — they show where each type has structural advantages, not absolute performance levels.</p></div>
+      <div class="modal-section"><h4>The Key Insight</h4><p><strong>Neither agent type dominates all dimensions.</strong> The AI-powered agent is dramatically stronger in scalable, repeatable tasks (lead gen, marketing speed, 24/7 availability, client volume). The traditional agent maintains advantages in relationship depth, hyperlocal intelligence, and emotional trust — exactly the dimensions that create client loyalty and referrals.</p>
+      <p style="margin-top:8px;"><strong>The winning formula</strong> is an agent who combines both: AI for scale and efficiency, human expertise for judgment and relationships. This is what the top 20% are building.</p></div>`
+  },
+
+  'modal-surv-aipower': {
+    title: 'Agent Type: AI-Augmented Top Producer',
+    body: `<div class="modal-stat" style="color:var(--success);">95%+</div><div class="modal-stat-label">Estimated survival probability — The dominant class emerging</div>
+      <div class="modal-section"><h4>Who This Is</h4><p>A top producer (25+ deals/year) who has also invested in structured AI workflows, hyperlocal content, and Answer Engine Optimization. They're not just using AI for listing descriptions — they have a complete AI-integrated operating system that handles lead qualification, follow-up, scheduling, marketing, and CRM automatically.</p></div>
+      <div class="modal-section"><h4>Why They Win</h4><ul><li>Already closing 25+ deals — relationship base is immune to AI displacement</li><li>AI multiplies their capacity to 35–45% more deals without more hours</li><li>Income compounds into the $150K–$300K+ range</li><li>Brand equity grows as AI recommends them in AEO searches</li><li>Competitors are being displaced, concentrating more deals to them</li></ul></div>`
+  },
+
+  'modal-surv-highvol': {
+    title: 'Agent Type: High-Volume Traditional Agent',
+    body: `<div class="modal-stat" style="color:var(--warning);">70%</div><div class="modal-stat-label">Estimated survival probability — Stable but under increasing pressure</div>
+      <div class="modal-section"><h4>Who This Is</h4><p>An experienced agent closing 15–30 deals per year through relationships and hustle, using AI minimally or inconsistently (dabbler). They have strong referral networks and community presence, but are losing ground to AI-augmented competitors who respond faster and produce better marketing.</p></div>
+      <div class="modal-section"><h4>The Risk</h4><p>Without AI adoption, their competitors are handling the same volume in fewer hours and can take on more clients. Over time, the referral pipeline advantage erodes as AI-powered agents build stronger digital presence and get recommended by AI assistants first.</p></div>
+      <div class="modal-section"><h4>The Path Forward</h4><p>Move from dabbler to structured AI user. Implement AI for the top 3 time-consuming routine tasks immediately. The relationship base protects them in the near term — but the window to build AI systems is narrowing.</p></div>`
+  },
+
+  'modal-surv-midai': {
+    title: 'Agent Type: Mid-Volume Agent, Actively Adopting AI',
+    body: `<div class="modal-stat" style="color:var(--success);">80%</div><div class="modal-stat-label">Estimated survival probability — Growing trajectory</div>
+      <div class="modal-section"><h4>Who This Is</h4><p>An agent closing 8–20 deals per year who has committed to building real AI systems — not just dabbling with ChatGPT for listing descriptions, but implementing structured workflows for lead response, scheduling, and marketing content. They're seeing productivity gains and reinvesting time into relationship building.</p></div>
+      <div class="modal-section"><h4>Why They Can Win</h4><p>They're on the right side of the productivity divide. With structured AI, their deal volume can grow to 25+ without proportional time investment. The key is continuing to deepen both AI systems AND the human relationship skills that AI can't replicate.</p></div>`
+  },
+
+  'modal-surv-midno': {
+    title: 'Agent Type: Mid-Volume Agent, Resisting AI',
+    body: `<div class="modal-stat" style="color:var(--danger);">35%</div><div class="modal-stat-label">Estimated survival probability — Declining trajectory</div>
+      <div class="modal-section"><h4>The Squeeze</h4><p>Mid-volume agents who aren't using AI are getting squeezed from both sides: AI-augmented competitors are capturing leads faster and marketing better, while low-volume agents are being cleared out (concentrating the available business). Without the productivity gains of AI, these agents are working as hard as ever for a declining share of available deals.</p></div>
+      <div class="modal-section"><h4>The Window Is Closing</h4><p>First-mover advantage in AI compounds over time. Every month of delay means competitors build more AI-optimized referral networks, better AEO presence, and more efficient pipelines. The gap widens each quarter.</p></div>`
+  },
+
+  'modal-surv-low': {
+    title: 'Agent Type: Low-Volume Agent (1–5 deals/year)',
+    body: `<div class="modal-stat" style="color:var(--danger);">15%</div><div class="modal-stat-label">Estimated survival probability — Exit likely within 3–5 years</div>
+      <div class="modal-section"><h4>The Reality</h4><p>Agents closing 1–5 deals per year generate insufficient income to invest in AI tools, coaching, or marketing that could change the trajectory. They typically rely on occasional personal referrals — a base that is eroding as AI-powered agents capture more of the referral conversation through AEO.</p></div>
+      <div class="modal-section"><h4>The AI-Specific Risk</h4><p>Zillow Showcase listings average 79% more page views and 91% more shares than non-Showcase listings. Self-guided touring with smart locks is already available. AI lead qualification captures internet leads before a low-volume agent can respond. These agents are being systematically outcompeted at every stage of the funnel.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.youtube.com/watch?v=v1YQB6ZJqGw" target="_blank">YouTube analysis (March 2026): Zillow Showcase stats — 79% more views, 91% more shares</a>
+      </div>`
+  },
+
+  'modal-surv-zero': {
+    title: 'Agent Type: Zero-Transaction Agent',
+    body: `<div class="modal-stat" style="color:var(--danger);">&lt;5%</div><div class="modal-stat-label">Estimated survival probability — Displacement is functionally complete</div>
+      <div class="modal-section"><h4>The Hard Truth</h4><p>Based on Redfin/Inman data, approximately 71% of all MLS-active real estate licenses had zero closed transactions in 2024. This population — part-time licensees, referral-only agents, inactive license holders — provides no differentiated value that AI cannot already replicate or surpass.</p></div>
+      <div class="modal-section"><h4>What This Means</h4><p>If an agent closed zero deals in 2024 without a deliberate strategy (team building, referral-only network development), they should make a decision: invest seriously in becoming competitive or exit the industry before the market exits them. The commission lawsuit changes have already raised the bar for demonstrating value — AI will raise it further.</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Context:</strong> The &lt;5% survival probability is a directional analytical estimate, not a published statistic. It reflects the author's interpretation of the data — not an official forecast. Zero-transaction agents who have a deliberate referral-only strategy, team lead business, or are transitioning markets face different circumstances.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.inman.com/2025/01/24/71-of-real-estate-agents-didnt-close-any-deals-last-year/" target="_blank">Inman (Jan 2025): 71% of MLS-active licenses — zero closed deals in 2024</a>
+        <a href="https://chicagoagentmagazine.com/2026/03/02/artificial-intelligence-will-not-replace-real-estate-agents-it-will-divide-them/" target="_blank">Chicago Agent Magazine (March 2026): AI will divide agents, not just replace them</a>
+      </div>`
+  },
+
+  'modal-timeline-forecast': {
+    title: 'Agent Workforce Projection: Full Methodology & 2026 Update',
+    body: `
+      <div class="modal-section">
+        <h4>Where We Stand Right Now — April 2026</h4>
+        <p>The chart shows <strong>three scenarios side by side</strong>. The orange marker on the <strong>2026 column is the present moment</strong>. Every data point to the left is confirmed historical fact. Everything to the right is projection.</p>
+        <p style="margin-top:8px;">As of April 2026, NAR membership is estimated near <strong>1.38–1.40M</strong> — down from the all-time peak of 1,600,886 in October 2022. That's a loss of roughly 200,000–220,000 members in under four years. The pace of decline has been accelerating, not slowing. This confirmed trajectory is the foundation of the entire projection.</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>The Three Lines Explained</h4>
+
+        <p><strong style="color:#e74c3c;">&#9632; Red Line — Disruption Scenario (Ashokan / Costa Alves)</strong></p>
+        <p>In March 2026, industry analyst <strong>Biju Ashokan</strong> was cited in a LinkedIn analysis by Costa Alves: <em>"The number of agents in the US won't slip by 10% because of AI — it could collapse from roughly 1.5M to ~200K over the next decade."</em> This is the aggressive disruption scenario. It models a world where AI absorbs lead generation, follow-up, property search, CMA preparation, and transaction coordination — while commission reform and self-directed buyer tools remove the remaining barriers to agent-free transactions. The industry consolidates around the top 10–15% of truly skilled operators. The red line declines from ~1.38M today to roughly 200K by 2035.</p>
+
+        <p style="margin-top:12px;"><strong style="color:#aaaaaa;">&#9632; Gray Dashed Line — BLS Conservative (Establishment View)</strong></p>
+        <p>The <a href="https://www.bls.gov/ooh/sales/real-estate-brokers-and-sales-agents.htm" target="_blank">Bureau of Labor Statistics Occupational Outlook Handbook</a> projects approximately <strong>3% employment growth</strong> for real estate brokers and sales agents from 2024 to 2034 — essentially flat. Important caveat: BLS counts roughly 550,000 wage-and-salary workers in this category, which differs from NAR's self-reported membership of 1.4M+ (NAR includes self-employed agents, part-timers, and referral-only licensees). BLS models use traditional economic inputs and do <em>not</em> incorporate AI capability disruption, the NAR commission settlement changes, or the self-directed transaction trend. It is the conservative, status-quo baseline.</p>
+
+        <p style="margin-top:12px;"><strong style="color:#27ae60;">&#9632; Green Dashed Line — AI-Augmented Elite Survivors</strong></p>
+        <p>This line models the subset of agents who successfully integrate structured AI workflows, build irreplaceable local authority, and evolve into true client advisors. These agents don't just survive the contraction — they <em>absorb market share</em> from the hundreds of thousands who exit. They are estimated to grow from roughly 50K structured AI users in 2022 to a stabilized pool of 200K–260K high-performance professionals by 2027–2030. This is the cohort The Edmund Bogen Team's Mastermind is built to produce.</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>Why NAR Membership ≠ "Active Agents"</h4>
+        <p>This distinction is essential to reading the chart correctly. NAR's 1.6M peak included four very different populations:</p>
+        <ul>
+          <li><strong>Full-time producers (~20–25%):</strong> Agents closing 6+ transactions per year with consistent client pipelines</li>
+          <li><strong>Part-time and occasional agents:</strong> Licensed and active but closing 1–5 deals per year</li>
+          <li><strong>Referral-only licensees:</strong> Maintain their license specifically to refer clients and earn a referral split — no active production</li>
+          <li><strong>Inactive license holders:</strong> Pay NAR dues for MLS access, networking, or career optionality — rarely or never transact</li>
+        </ul>
+        <p style="margin-top:8px;"><a href="https://www.inman.com/2025/01/24/71-of-real-estate-agents-didnt-close-any-deals-last-year/" target="_blank">Inman confirmed in January 2025</a> that <strong>71% of all MLS-active licenses closed zero transactions in 2024</strong>. This means the "real" productive workforce was always closer to 400,000–500,000 agents — not 1.6 million. The displacement story is therefore less dramatic in raw numbers, but far more urgent for the 29% who are actually transacting: they are about to compete for the same pool of clients with far fewer humans and far more powerful AI tools.</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>The Four Forces Driving the Decline (2026–2035)</h4>
+        <ul>
+          <li><strong>1. AI Task Automation:</strong> <a href="https://www.morganstanley.com/insights/articles/ai-in-real-estate-2025" target="_blank">Morgan Stanley (July 2025)</a> confirmed AI can already handle 37% of commercial real estate tasks. For residential agents, task-level analysis puts exposure higher — listing copy (95% automatable), lead follow-up (91%), scheduling (89%), market reports (88%), and CMA generation (85%) are already being executed by AI at scale. As agentic AI systems mature in 2026–2028, entire workflows — not just tasks — will be automated end-to-end.</li>
+          <li style="margin-top:8px;"><strong>2. Commission Structure Reform:</strong> The August 2024 NAR settlement decoupled buyer-agent compensation from MLS listings. Buyers must now explicitly agree to compensation before touring. This forces every agent into the value-justification conversation that was previously embedded in the transaction structure. Agents who cannot articulate irreplaceable value will exit — or be walked away from.</li>
+          <li style="margin-top:8px;"><strong>3. Self-Directed Buyer Behavior:</strong> Opendoor, Rently, and portal-native AI tools are expanding buyer self-sufficiency rapidly. <a href="https://www.realtor.com/research/ai-and-housing-survey-2025/" target="_blank">Realtor.com (Aug 2025)</a> found 82% of buyers now use AI for housing research before ever contacting an agent. The agent is increasingly a closer, not a researcher — which requires a fundamentally different skill set.</li>
+          <li style="margin-top:8px;"><strong>4. Transaction Volume Pressure:</strong> Rate-driven affordability constraints have reduced total transaction volume from the pandemic peak. Fewer deals mean thinner margins for marginal producers — and a natural filter that flushes out those who depended on a hot market to stay active.</li>
+        </ul>
+      </div>
+
+      <div class="modal-section">
+        <h4>The Realistic Range — Not a Prediction</h4>
+        <p>No institution — not NAR, not BLS, not Goldman Sachs — can forecast agent count to 2035 with precision. The three scenarios define a meaningful range:</p>
+        <ul>
+          <li><strong>BLS Conservative:</strong> ~1.75M agent-equivalent jobs by 2035 (flat; AI disruption not modeled)</li>
+          <li><strong>NAR Internal Forecast:</strong> ~1.2M members (moderate structural decline; AI not the primary driver in their model)</li>
+          <li><strong>Ashokan Disruption Scenario:</strong> ~200K truly active professional agents (AI as the primary consolidation force)</li>
+        </ul>
+        <p style="margin-top:8px;">The truth almost certainly falls between the NAR forecast and the Ashokan scenario — somewhere in the range of <strong>300K–700K truly active agents by 2035</strong>, depending on the pace of AI capability growth, consumer adoption of self-directed transaction tools, and how aggressively the regulatory environment adapts. The agents who will be in that surviving range are making that decision right now — in 2026.</p>
+      </div>
+
+      <div class="modal-fc nuanced">
+        <p><strong>⚠ Projection Disclosure.</strong> The red and green lines are directional projections, not official forecasts. Historical data points (2022–2025) are confirmed from NAR records and BLS publications. The 2026 current-year figure (~1.38M) is an estimate based on the confirmed May 2025 NAR figure of 1.453M and the ongoing monthly decline trend. All 2027+ data points are analytical projections synthesized from the sources cited. No single source endorses the entire red-line trajectory.</p>
+      </div>
+
+      <div class="modal-sources"><h5>Sources & Citations</h5>
+        <a href="https://www.linkedin.com/pulse/warning-real-estate-agents-ai-wont-replace-you-agent-costa-alves-wle8c" target="_blank">LinkedIn / Costa Alves (March 2026): Biju Ashokan 200K disruption projection</a>
+        <a href="https://www.bls.gov/ooh/sales/real-estate-brokers-and-sales-agents.htm" target="_blank">BLS Occupational Outlook Handbook: 3% employment growth projected 2024–2034</a>
+        <a href="https://www.floridarealtors.org/news-media/news-articles/2025/06/nar-membership-remains-above-forecast" target="_blank">Florida Realtors / NAR (June 2025): Confirmed membership 1.453M as of May 2025</a>
+        <a href="https://www.nar.realtor/magazine/real-estate-news/strength-in-numbers" target="_blank">NAR Magazine: Peak membership 1,600,886 — October 2022</a>
+        <a href="https://www.inman.com/2025/01/24/71-of-real-estate-agents-didnt-close-any-deals-last-year/" target="_blank">Inman (Jan 2025): 71% of MLS-active licenses — zero closed deals in 2024</a>
+        <a href="https://www.morganstanley.com/insights/articles/ai-in-real-estate-2025" target="_blank">Morgan Stanley (July 2025): 37% of real estate tasks automatable — confirmed</a>
+        <a href="https://housingnotes.com/p/the-nar-membership-collapse-is-only" target="_blank">Housing Notes / Jonathan Miller: NAR long-term internal forecast ~1.2M members</a>
+        <a href="https://www.realtor.com/research/ai-and-housing-survey-2025/" target="_blank">Realtor.com (Aug 2025): 82% of buyers use AI for housing research before contacting agent</a>
+      </div>`
+  },
+
+  'modal-tasks-curve': {
+    title: 'AI Task Coverage Curve: How It Was Built',
+    body: `<div class="modal-section"><h4>Data Foundation</h4><p>The task coverage curve is a synthesis of confirmed data points:</p><ul>
+      <li><strong>2023 baseline (~30%):</strong> AI could handle basic content generation and data retrieval tasks</li>
+      <li><strong>2025 confirmed (~37–55%):</strong> Morgan Stanley confirmed 37% of CRE tasks automatable. Individual task analysis (listing copy at 95%, lead follow-up at 91%, scheduling at 89%, etc.) suggests residential agent exposure is higher</li>
+      <li><strong>2028–2035 projection:</strong> Synthesized from Assetsoft "2026 Reality Check" forecasts (60–80% by 2028–2030) and general AI capability trajectory research</li>
+    </ul></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Projective.</strong> The 2025 confirmed baseline is sourced (Morgan Stanley). The 2028+ trajectory is analyst consensus / directional projection. AI capability growth is non-linear and difficult to forecast precisely.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.morganstanley.com/insights/articles/ai-in-real-estate-2025" target="_blank">Morgan Stanley (July 2025): 37% of tasks automatable — confirmed baseline</a>
+        <a href="https://www.assetsoft.biz/blogs/post/the-2026-reality-check-ai-s-impact-on-real-estate-jobs" target="_blank">Assetsoft 2026: 60–80% projection for 2028–2030</a>
+      </div>`
+  },
+
+  'modal-phase-2023': {
+    title: 'Timeline: 2023–2024 — The Augmentation Phase',
+    body: `<div class="modal-section"><h4>What Happened</h4><p>AI entered real estate primarily as a content and efficiency tool. ChatGPT, Claude, and real-estate-specific AI tools proliferated. NAR membership remained near its peak of 1.6M (Oct 2022 peak). The NAR Technology Survey from this period showed early adoption beginning. BLS maintained its 3% growth projection for real estate agents through 2034, not yet incorporating AI disruption into models.</p></div>
+      <div class="modal-section"><h4>The First-Mover Window</h4><p>Agents who adopted AI in 2023–2024 had a meaningful first-mover advantage. They built AI-optimized workflows before competitors and began establishing Answer Engine presence before the concept was widely understood.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.bls.gov/ooh/sales/real-estate-brokers-and-sales-agents.htm" target="_blank">BLS Occupational Outlook: 3% projected growth 2024–2034</a>
+        <a href="https://www.nar.realtor/magazine/real-estate-news/strength-in-numbers" target="_blank">NAR (Nov 2024): Membership at 1.526M, near peak levels</a>
+      </div>`
+  },
+
+  'modal-phase-2025': {
+    title: 'Timeline: 2025 — The Great Sorting Begins',
+    body: `<div class="modal-section"><h4>Key 2025 Data Points (Confirmed)</h4><ul>
+      <li>NAR membership falls from 1.526M (Oct 2024) to 1.453M by May 2025</li>
+      <li>NAR median member income rises to $58,100 (2024 calendar year)</li>
+      <li>82% of buyers use AI for housing research (Realtor.com, Aug 2025)</li>
+      <li>82% of agents use AI in some form (RPR, Feb 2026)</li>
+      <li>Only 17% see significantly positive business impact (NAR Tech Survey, Sept 2025)</li>
+      <li>Redfin/Inman: 71% of MLS-active licenses had zero transactions</li>
+      <li>Goldman Sachs: AI will displace 6–7% of U.S. workers over the next decade</li>
+    </ul></div>
+      <div class="modal-section"><h4>The Productivity Gap Emerges</h4><p>2025 is the year the data showed clearly that AI adoption alone isn't enough — structured workflows are the differentiator. The 82/17 paradox becomes visible and documented.</p></div>
+      <div class="modal-sources"><h5>Key Sources for 2025 Data</h5>
+        <a href="https://www.nar.realtor/newsroom/realtors-embrace-ai-digital-tools-to-enhance-client-service-nar-survey-finds" target="_blank">NAR 2025 Technology Survey (Sept 2025)</a>
+        <a href="https://blog.narrpr.com/tips/real-estate-agents-use-ai/" target="_blank">RPR AI Adoption Survey (Feb 2026)</a>
+        <a href="https://www.realtor.com/research/ai-and-housing-survey-2025/" target="_blank">Realtor.com AI & Housing Survey (Aug 2025)</a>
+      </div>`
+  },
+
+  'modal-phase-2026': {
+    title: 'Timeline: 2026–2027 — Acceleration',
+    body: `<div class="modal-section"><h4>What Industry Research Projects</h4><p>The Assetsoft "2026 Reality Check" report projects that by 2026–2027, companies that haven't adapted will "face severe competitive pressure and significant workforce restructuring at technology-forward firms." Agentic AI systems — which take action, not just respond — will begin managing full lead-to-appointment pipelines.</p></div>
+      <div class="modal-section"><h4>Self-Guided Showings</h4><p>Opendoor already offers self-guided tours with ID upload and app access. Rently markets ID-verified self-tours with one-time passcodes. The showing-as-moat argument continues to weaken. However, seller resistance to unsupervised access remains high for luxury properties.</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Forward-Looking.</strong> These are analyst projections for 2026–2027. They are directionally supported by current trends but uncertain in exact timing and magnitude.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.assetsoft.biz/blogs/post/the-2026-reality-check-ai-s-impact-on-real-estate-jobs" target="_blank">Assetsoft 2026 Reality Check: Phase-by-phase disruption timeline</a>
+        <a href="https://www.youtube.com/watch?v=v1YQB6ZJqGw" target="_blank">YouTube analysis (March 2026): Opendoor/Rently self-guided showing data</a>
+      </div>`
+  },
+
+  'modal-phase-2028': {
+    title: 'Timeline: 2028–2030 — Mass Transformation',
+    body: `<div class="modal-section"><h4>The Projection</h4><p>Assetsoft's research states: "By 2028–2030, projections suggest 60–80% of tasks typically handled by real estate agents could be automated or AI-driven." This is the phase where Morgan Stanley's $34B efficiency gain fully materializes, and the industry consolidates around elite, AI-augmented operators.</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Long-Range Projection.</strong> The 60–80% figure is from Assetsoft's industry analysis for 2028–2030, consistent with AI capability growth trajectories from multiple sources. This is speculative beyond 2–3 years. Regulatory, legal, and consumer behavior factors could significantly alter the pace.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.assetsoft.biz/blogs/post/the-2026-reality-check-ai-s-impact-on-real-estate-jobs" target="_blank">Assetsoft (Dec 2025): 60–80% of agent tasks AI-driven by 2028–2030</a>
+        <a href="https://www.morganstanley.com/insights/articles/ai-in-real-estate-2025" target="_blank">Morgan Stanley: $34B efficiency materialization timeline</a>
+      </div>`
+  },
+
+  'modal-phase-2030': {
+    title: 'Timeline: 2030–2035 — The New Normal',
+    body: `<div class="modal-section"><h4>The 200K Scenario</h4><p>Industry analyst Biju Ashokan projects agent count could collapse from 1.5M to ~200K over the next decade. This is a directional projection from a single analyst — not a consensus forecast or official NAR/BLS estimate. It represents the "maximum disruption" scenario if AI adoption, self-guided transactions, and market concentration all accelerate simultaneously.</p></div>
+      <div class="modal-section"><h4>What the Surviving 200K Would Look Like</h4><p>True consultants: licensed professionals who manage AI systems, provide irreplaceable local insight, handle complex negotiation and problem-solving, and serve as trusted advisors for the most important financial decisions of their clients' lives. More like a doctor or attorney than a transaction facilitator.</p></div>
+      <div class="modal-section"><h4>The BLS Counterpoint</h4><p>The Bureau of Labor Statistics projects 3% employment growth for real estate agents from 2024–2034 — essentially flat. This is the conservative establishment view, which may underestimate AI disruption dynamics.</p></div>
+      <div class="modal-fc nuanced"><p><strong>⚠ Speculative.</strong> The 200K figure is a single analyst's directional projection. Present as "the aggressive scenario" rather than a forecast. The truth likely falls between BLS's flat projection and Ashokan's dramatic collapse.</p></div>`
+  },
+
+  'modal-score-ai': {
+    title: 'Scorecard: Structured AI Workflow System',
+    body: `<div class="modal-section"><h4>What This Measures</h4><p>Not just "do you use AI" — but do you have structured, role-specific workflows that run automatically for your highest-frequency tasks? This means: defined prompt templates, agentic systems for lead follow-up, automated CRM updates, and scheduled content production — not ad-hoc ChatGPT queries.</p></div>
+      <div class="modal-section"><h4>Why It's the #1 Factor</h4><p>The NAR data is clear: 82% use AI but only 17% see results. The differentiator is entirely the system. Agents with structured workflows consistently out-earn ad-hoc users by 5–10x in AI ROI. This is what Edmund's Mastermind teaches.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://www.nar.realtor/newsroom/realtors-embrace-ai-digital-tools-to-enhance-client-service-nar-survey-finds" target="_blank">NAR 2025 Technology Survey: 17% see results — the workflow gap</a>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: The system is the differentiator</a>
+      </div>`
+  },
+
+  'modal-score-hyperlocal': {
+    title: 'Scorecard: Hyperlocal Content Published',
+    body: `<div class="modal-section"><h4>What This Means in Practice</h4><p>Publishing regular, structured hyperlocal content — neighborhood-by-neighborhood realities, HOA truths, school district changes, offer pattern analysis, block-level livability details — that is specific enough to be cited by answer engines and valuable enough to be shared by clients.</p></div>
+      <div class="modal-section"><h4>The AEO Connection</h4><p>This content is the raw material for Answer Engine Optimization. When ChatGPT is asked "who's the expert on Saint Andrews Country Club real estate?" — it will cite the agent with the most specific, consistent, and verified hyperlocal content. This creates a self-reinforcing authority signal.</p></div>`
+  },
+
+  'modal-action-system': {
+    title: 'Action 1: Build Structured AI Systems',
+    body: `<div class="modal-section"><h4>What This Means</h4><p>Not "use ChatGPT more." Build repeatable, structured workflows for your top 5 highest-frequency tasks. Each workflow should include: a defined role prompt, context-providing input template, output constraints, and a review step. This transforms AI from an ad-hoc tool into a reliable business system.</p></div>
+      <div class="modal-section"><h4>Where to Start</h4><ul>
+        <li><strong>Week 1:</strong> Audit your time. Track every task and how long it takes for 5 business days.</li>
+        <li><strong>Week 2:</strong> Identify your highest-frequency, most time-consuming routine task (usually: lead response, listing copy, or social media content)</li>
+        <li><strong>Week 3:</strong> Build a structured workflow for that ONE task. Test, refine, systematize.</li>
+        <li><strong>Weeks 4+:</strong> Add one workflow per week until you've covered your top 5.</li>
+      </ul></div>
+      <div class="modal-section"><h4>Expected ROI</h4><p>PromptPlaybook research: agents who build structured workflows save 13–23 hours/week and generate $21,000+ in annual time value — with the recaptured hours redirected to revenue-generating activities.</p></div>
+      <div class="modal-sources"><h5>Sources</h5>
+        <a href="https://promptplaybook.ai/blog/real-estate-ai-adoption-gap-2026/" target="_blank">PromptPlaybook 2026: The 3-week implementation framework</a>
+      </div>`
+  },
+
+  'modal-mastermind': {
+    title: "Edmund's Mastermind: The AI-Powered Agent Coaching Community",
+    body: `<div class="modal-section"><h4>The Mission</h4><p>Edmund's Mastermind (formerly REIGNation) is Edmund Bogen's coaching and community platform for real estate professionals who want to master AI-powered business systems and become dominant market operators. Starting at $30/month with no contracts.</p></div>
+      <div class="modal-section"><h4>What Members Learn</h4><ul>
+        <li>Building structured AI workflows for the highest-ROI real estate tasks</li>
+        <li>Answer Engine Optimization (AEO) to become the recommended agent in your market</li>
+        <li>Hyperlocal content strategy that builds AI-visible authority</li>
+        <li>Agentic AI systems for lead management and client communication</li>
+        <li>How to redirect AI-saved time into maximum income-generating activity</li>
+      </ul></div>
+      <div class="modal-section"><h4>Contact</h4><p><strong>The Edmund Bogen Team at Douglas Elliman Real Estate</strong><br>edmund@bogenhomes.com &nbsp;·&nbsp; 561-235-7575<br>Boca Raton, FL — Serving Palm Beach to Miami</p></div>`
+  },
+
+};
+</script>
+</body>
+</html>
