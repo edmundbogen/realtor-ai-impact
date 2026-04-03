@@ -60,7 +60,8 @@
       cursor: pointer; transition: all 0.2s;
       border: none; background: none;
     }
-    .nav-tab:hover, .nav-tab.active { background: rgba(0,168,225,0.15); color: var(--cyan); }
+    .nav-tab:hover { background: rgba(0,168,225,0.15); color: var(--cyan); }
+    .nav-tab.active { background: rgba(0,168,225,0.2); color: var(--cyan); border-bottom: 3px solid var(--cyan); font-weight: 700; }
 
     /* ── TICKER ── */
     .ticker-wrap { background: var(--cyan); overflow: hidden; padding: 9px 0; }
@@ -100,7 +101,7 @@
 
     /* ── SECTIONS ── */
     .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .tab-content.active { display: block; scroll-margin-top: 72px; }
     .section { max-width: 1280px; margin: 0 auto; padding: 56px 28px; }
     .section-header { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 32px; }
     .accent-bar { width: 4px; height: 48px; background: var(--cyan); border-radius: 2px; flex-shrink: 0; }
@@ -304,6 +305,27 @@
     .modal-sources a:hover { text-decoration: underline; }
 
     /* ── FOOTER ── */
+    .tab-banner {
+      background: var(--navy);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 3px solid var(--cyan);
+    }
+    .tab-banner-label {
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .tab-banner-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      flex-shrink: 0;
+    }
     footer { background: var(--navy); color: rgba(255,255,255,0.4); text-align: center; padding: 28px 40px; font-size: 10px; letter-spacing: 0.06em; line-height: 1.9; }
     footer a { color: var(--cyan); text-decoration: none; }
 
@@ -389,6 +411,7 @@
      SECTION 1: DISPLACEMENT
 ════════════════════════════════════════════════ -->
 <div id="tab-displacement" class="tab-content active">
+<div class="tab-banner"><div class="tab-banner-dot"></div><div class="tab-banner-label">Displacement Analysis — Click any card or chart for sourced explanation</div></div>
 <div class="section">
 
   <div class="section-header">
@@ -574,6 +597,7 @@
      SECTION 2: INCOME
 ════════════════════════════════════════════════ -->
 <div id="tab-income" class="tab-content">
+<div class="tab-banner"><div class="tab-banner-dot"></div><div class="tab-banner-label">Income Impact — Click any card or chart for sourced explanation</div></div>
 <div class="section">
   <div class="section-header">
     <div class="accent-bar"></div>
@@ -667,6 +691,7 @@
      SECTION 3: ADVANTAGE
 ════════════════════════════════════════════════ -->
 <div id="tab-advantage" class="tab-content">
+<div class="tab-banner"><div class="tab-banner-dot"></div><div class="tab-banner-label">Competitive Edge — Click any card or chart for sourced explanation</div></div>
 <div class="section">
   <div class="section-header">
     <div class="accent-bar"></div>
@@ -765,6 +790,7 @@
      SECTION 4: TIMELINE
 ════════════════════════════════════════════════ -->
 <div id="tab-timeline" class="tab-content">
+<div class="tab-banner"><div class="tab-banner-dot"></div><div class="tab-banner-label">Disruption Timeline — Click any card or chart for sourced explanation</div></div>
 <div class="section">
   <div class="section-header">
     <div class="accent-bar"></div>
@@ -839,6 +865,7 @@
      SECTION 5: SURVIVAL
 ════════════════════════════════════════════════ -->
 <div id="tab-survival" class="tab-content">
+<div class="tab-banner"><div class="tab-banner-dot"></div><div class="tab-banner-label">Survival Blueprint — Click any card or chart for sourced explanation</div></div>
 <div class="section">
   <div class="section-header">
     <div class="accent-bar"></div>
@@ -961,9 +988,15 @@ function showTab(id) {
   TABS.forEach(t => {
     document.getElementById('tab-'+t).classList.remove('active');
   });
-  document.getElementById('tab-'+id).classList.add('active');
+  const targetTab = document.getElementById('tab-'+id);
+  targetTab.classList.add('active');
   document.querySelectorAll('.nav-tab').forEach((b,i) => b.classList.toggle('active', TABS[i]===id));
-  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Scroll so the content section sits just below the sticky nav
+  const navHeight = document.querySelector('nav').offsetHeight;
+  const tabTop = targetTab.getBoundingClientRect().top + window.pageYOffset - navHeight - 8;
+  window.scrollTo({ top: tabTop, behavior: 'smooth' });
+
   if(id==='survival') setTimeout(animateBars,400);
 }
 
